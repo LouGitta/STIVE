@@ -1,15 +1,18 @@
-Table Produits {
+Table produit {
   id int [pk]
   nom varchar(50)
-  prix int
+  prix float
   description varchar(255)
-  annee int
-  quantiteStock int
+  annee year
+  quantite_stock int
   reference varchar(50)
-  ID_Fournisseur int
-  ID_Info int
+  fournisseur_id int
+  info_id int
+  maison_id varchar(50)
+  famille_id varchar(50)
+  region_id varchar(50)
 }
-Table Utilisateur {
+Table utilisateur {
   id int [pk]
   nom varchar(50)
   prenom varchar(50)
@@ -18,34 +21,58 @@ Table Utilisateur {
   is_client bool
   
   }
-  Table Commandes {
+  Table commande {
     id int [pk]
-    dateCommande date
-    ID_Utilisateur int
-    ID_Produits int 
-    QuantiteCommande int
-    PrixCommande int
+    date_commande date
+    utilisateur_id int
+    produit_id int 
+    quantite_commande int
+    prix_commande int
   }
-  Table Fournisseur {
+  Table fournisseur {
     id int [pk]
     nom varchar(50)
   }
-  Table InfoProduit {
+
+  Table maison {
     id int [pk]
     maison varchar(50)
+  }
+  Table famille {
+    id int [pk]
     famille varchar(50)
+  }
+  Table region {
+    id int [pk]
     region varchar(50)
+    pays_id int
   }
 
+  Table article {
+    commande_id int
+    produit_id int
+  }
+    Table pays {
+    id int [pk]
+    pays varchar(50)
+  }
+Ref: "produit"."id" < "commande"."produit_id"
 
-Ref: "Produits"."id" < "Commandes"."ID_Produits"
+Ref: "fournisseur"."id" < "produit"."fournisseur_id"
 
-Ref: "Fournisseur"."id" < "Produits"."ID_Fournisseur"
+Ref: "utilisateur"."id" < "commande"."utilisateur_id"
 
-Ref: "Utilisateur"."id" < "Commandes"."ID_Utilisateur"
+Ref: "pays"."id" < "region"."pays_id"
 
-Ref: "InfoProduit"."id" < "Produits"."ID_Info"
+Ref: "commande"."id" < "article"."commande_id"
 
+Ref: "produit"."id" < "article"."produit_id"
+
+Ref: "region"."region" < "produit"."region_id"
+
+Ref: "maison"."maison" < "produit"."maison_id"
+
+Ref: "famille"."famille" < "produit"."famille_id"
 
 
 CREATE TABLE Produits (
