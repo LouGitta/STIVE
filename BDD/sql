@@ -64,70 +64,222 @@ Table produit as PRODUIT {
   region_id int [ref: > REGION.id]
 }
 
-CREATE TABLE PAYS (
-  id INT PRIMARY KEY,
-  pays VARCHAR(50)
-);
+-- Database: `CubeDB`
+--
 
-CREATE TABLE FOURNISSEUR (
-  id INT PRIMARY KEY,
-  nom VARCHAR(50)
-);
+-- --------------------------------------------------------
 
-CREATE TABLE MAISON (
-  id INT PRIMARY KEY,
-  maison VARCHAR(50)
-);
+--
+-- Table structure for table `article`
+--
 
-CREATE TABLE FAMILLE (
-  id INT PRIMARY KEY,
-  famille VARCHAR(50)
-);
+CREATE TABLE `article` (
+  `commande_id` int(11) NOT NULL,
+  `produit_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE REGION (
-  id INT PRIMARY KEY,
-  region VARCHAR(50),
-  pays_id INT REFERENCES PAYS(id)
-);
+-- --------------------------------------------------------
 
-CREATE TABLE UTILISATEUR (
-  id INT PRIMARY KEY,
-  nom VARCHAR(50),
-  prenom VARCHAR(50),
-  mdp VARCHAR(50),
-  mail VARCHAR(50),
-  is_client BOOLEAN
-);
+--
+-- Table structure for table `commande`
+--
 
-CREATE TABLE COMMANDE (
-  id INT PRIMARY KEY,
-  date_commande DATE,
-  utilisateur_id INT REFERENCES UTILISATEUR(id),
-  produit_id INT REFERENCES PRODUIT(id),
-  quantite_commande INT,
-  prix_commande INT
-);
+CREATE TABLE `commande` (
+  `id` int(11) NOT NULL,
+  `date_commande` date DEFAULT NULL,
+  `utilisateur_id` int(11) DEFAULT NULL,
+  `produit_id` int(11) DEFAULT NULL,
+  `quantite_commande` int(11) DEFAULT NULL,
+  `prix_commande` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE ARTICLE (
-  commande_id INT,
-  produit_id INT,
-  PRIMARY KEY (commande_id, produit_id),
-  FOREIGN KEY (commande_id) REFERENCES COMMANDE(id),
-  FOREIGN KEY (produit_id) REFERENCES PRODUIT(id)
-);
+-- --------------------------------------------------------
 
-CREATE TABLE PRODUIT (
-  id INT PRIMARY KEY,
-  nom VARCHAR(50),
-  prix FLOAT,
-  description VARCHAR(255),
-  annee YEAR,
-  quantite_stock INT,
-  reference VARCHAR(50),
-  fournisseur_id INT REFERENCES FOURNISSEUR(id),
-  info_id INT,
-  maison_id INT REFERENCES MAISON(id),
-  famille_id INT REFERENCES FAMILLE(id),
-  region_id INT REFERENCES REGION(id)
-);
+--
+-- Table structure for table `famille`
+--
 
+CREATE TABLE `famille` (
+  `id` int(11) NOT NULL,
+  `famille` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fournisseur`
+--
+
+CREATE TABLE `fournisseur` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `maison`
+--
+
+CREATE TABLE `maison` (
+  `id` int(11) NOT NULL,
+  `maison` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pays`
+--
+
+CREATE TABLE `pays` (
+  `id` int(11) NOT NULL,
+  `pays` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `produit`
+--
+
+CREATE TABLE `produit` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(50) DEFAULT NULL,
+  `prix` float DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `annee` year(4) DEFAULT NULL,
+  `quantite_stock` int(11) DEFAULT NULL,
+  `reference` varchar(50) DEFAULT NULL,
+  `fournisseur_id` int(11) DEFAULT NULL,
+  `info_id` int(11) DEFAULT NULL,
+  `maison_id` int(50) DEFAULT NULL,
+  `famille_id` int(50) DEFAULT NULL,
+  `region_id` int(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `region`
+--
+
+CREATE TABLE `region` (
+  `id` int(11) NOT NULL,
+  `region` varchar(50) DEFAULT NULL,
+  `pays_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id` int(11) NOT NULL,
+  `nom` varchar(50) DEFAULT NULL,
+  `prenom` varchar(50) DEFAULT NULL,
+  `mdp` varchar(50) DEFAULT NULL,
+  `mail` varchar(50) DEFAULT NULL,
+  `is_client` tinyint(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `article`
+--
+ALTER TABLE `article`
+  ADD PRIMARY KEY (`commande_id`,`produit_id`),
+  ADD KEY `produit_id` (`produit_id`);
+
+--
+-- Indexes for table `commande`
+--
+ALTER TABLE `commande`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `utilisateur_id` (`utilisateur_id`),
+  ADD KEY `produit_id` (`produit_id`);
+
+--
+-- Indexes for table `famille`
+--
+ALTER TABLE `famille`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `fournisseur`
+--
+ALTER TABLE `fournisseur`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `maison`
+--
+ALTER TABLE `maison`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pays`
+--
+ALTER TABLE `pays`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `produit`
+--
+ALTER TABLE `produit`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fournisseur_id` (`fournisseur_id`),
+  ADD KEY `maison_id` (`maison_id`),
+  ADD KEY `famille_id` (`famille_id`),
+  ADD KEY `region_id` (`region_id`);
+
+--
+-- Indexes for table `region`
+--
+ALTER TABLE `region`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pays_id` (`pays_id`);
+
+--
+-- Indexes for table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `article`
+--
+ALTER TABLE `article`
+  ADD CONSTRAINT `article_ibfk_1` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`),
+  ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+--
+-- Constraints for table `commande`
+--
+ALTER TABLE `commande`
+  ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`),
+  ADD CONSTRAINT `commande_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+--
+-- Constraints for table `produit`
+--
+ALTER TABLE `produit`
+  ADD CONSTRAINT `produit_ibfk_1` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseur` (`id`),
+  ADD CONSTRAINT `produit_ibfk_2` FOREIGN KEY (`maison_id`) REFERENCES `maison` (`id`),
+  ADD CONSTRAINT `produit_ibfk_3` FOREIGN KEY (`famille_id`) REFERENCES `famille` (`id`),
+  ADD CONSTRAINT `produit_ibfk_4` FOREIGN KEY (`region_id`) REFERENCES `region` (`id`);
+
+--
+-- Constraints for table `region`
+--
+ALTER TABLE `region`
+  ADD CONSTRAINT `region_ibfk_1` FOREIGN KEY (`pays_id`) REFERENCES `pays` (`id`);
