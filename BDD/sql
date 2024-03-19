@@ -59,9 +59,9 @@ Table produit as PRODUIT {
   reference varchar(50)
   fournisseur_id int [ref: > FOURNISSEUR.id]
   info_id int
-  maison_id varchar(50) [ref: > MAISON.id]
-  famille_id varchar(50) [ref: > FAMILLE.id]
-  region_id varchar(50) [ref: > REGION.id]
+  maison_id int [ref: > MAISON.id]
+  famille_id int [ref: > FAMILLE.id]
+  region_id int [ref: > REGION.id]
 }
 
 CREATE TABLE PAYS (
