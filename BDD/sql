@@ -1,4 +1,55 @@
-Table produit {
+Table pays as PAYS {
+  id int [pk]
+  pays varchar(50)
+}
+
+Table fournisseur as FOURNISSEUR {
+  id int [pk]
+  nom varchar(50)
+}
+
+Table maison as MAISON {
+  id int [pk]
+  maison varchar(50)
+}
+
+Table famille as FAMILLE {
+  id int [pk]
+  famille varchar(50)
+}
+
+Table region as REGION {
+  id int [pk]
+  region varchar(50)
+  pays_id int [ref: > PAYS.id]
+}
+
+Table utilisateur as UTILISATEUR {
+  id int [pk]
+  nom varchar(50)
+  prenom varchar(50)
+  mdp varchar(50)
+  mail varchar(50)
+  is_client boolean
+}
+
+Table article as ARTICLE {
+  
+  commande_id int [pk, ref: > COMMANDE.id]
+  produit_id int [pk, ref: > PRODUIT.id]
+
+
+}
+Table commande as COMMANDE {
+  id int [pk]
+  date_commande date
+  utilisateur_id int [ref: > UTILISATEUR.id]
+  produit_id int [ref: > PRODUIT.id]
+  quantite_commande int
+  prix_commande int
+}
+
+Table produit as PRODUIT {
   id int [pk]
   nom varchar(50)
   prix float
@@ -6,90 +57,40 @@ Table produit {
   annee year
   quantite_stock int
   reference varchar(50)
-  fournisseur_id int
+  fournisseur_id int [ref: > FOURNISSEUR.id]
   info_id int
-  maison_id varchar(50)
-  famille_id varchar(50)
-  region_id varchar(50)
+  maison_id varchar(50) [ref: > MAISON.id]
+  famille_id varchar(50) [ref: > FAMILLE.id]
+  region_id varchar(50) [ref: > REGION.id]
 }
-Table utilisateur {
-  id int [pk]
-  nom varchar(50)
-  prenom varchar(50)
-  mdp varchar(50)
-  mail varchar(50)
-  is_client bool
-  
-  }
-  Table commande {
-    id int [pk]
-    date_commande date
-    utilisateur_id int
-    produit_id int 
-    quantite_commande int
-    prix_commande int
-  }
-  Table fournisseur {
-    id int [pk]
-    nom varchar(50)
-  }
 
-  Table maison {
-    id int [pk]
-    maison varchar(50)
-  }
-  Table famille {
-    id int [pk]
-    famille varchar(50)
-  }
-  Table region {
-    id int [pk]
-    region varchar(50)
-    pays_id int
-  }
-
-  Table article {
-    commande_id int
-    produit_id int
-  }
-    Table pays {
-    id int [pk]
-    pays varchar(50)
-  }
-Ref: "produit"."id" < "commande"."produit_id"
-
-Ref: "fournisseur"."id" < "produit"."fournisseur_id"
-
-Ref: "utilisateur"."id" < "commande"."utilisateur_id"
-
-Ref: "pays"."id" < "region"."pays_id"
-
-Ref: "commande"."id" < "article"."commande_id"
-
-Ref: "produit"."id" < "article"."produit_id"
-
-Ref: "region"."region" < "produit"."region_id"
-
-Ref: "maison"."maison" < "produit"."maison_id"
-
-Ref: "famille"."famille" < "produit"."famille_id"
-
-
-CREATE TABLE Produits (
+CREATE TABLE PAYS (
   id INT PRIMARY KEY,
-  nom VARCHAR(50),
-  prix INT,
-  description VARCHAR(255),
-  annee INT,
-  quantiteStock INT,
-  reference VARCHAR(50),
-  ID_Fournisseur INT,
-  ID_Info INT,
-  FOREIGN KEY (ID_Fournisseur) REFERENCES Fournisseur(id),
-  FOREIGN KEY (ID_Info) REFERENCES InfoProduit(id)
+  pays VARCHAR(50)
 );
 
-CREATE TABLE Utilisateur (
+CREATE TABLE FOURNISSEUR (
+  id INT PRIMARY KEY,
+  nom VARCHAR(50)
+);
+
+CREATE TABLE MAISON (
+  id INT PRIMARY KEY,
+  maison VARCHAR(50)
+);
+
+CREATE TABLE FAMILLE (
+  id INT PRIMARY KEY,
+  famille VARCHAR(50)
+);
+
+CREATE TABLE REGION (
+  id INT PRIMARY KEY,
+  region VARCHAR(50),
+  pays_id INT REFERENCES PAYS(id)
+);
+
+CREATE TABLE UTILISATEUR (
   id INT PRIMARY KEY,
   nom VARCHAR(50),
   prenom VARCHAR(50),
@@ -98,25 +99,35 @@ CREATE TABLE Utilisateur (
   is_client BOOLEAN
 );
 
-CREATE TABLE Commandes (
+CREATE TABLE COMMANDE (
   id INT PRIMARY KEY,
-  dateCommande DATE,
-  ID_Utilisateur INT,
-  ID_Produits INT,
-  QuantiteCommande INT,
-  PrixCommande INT,
-  FOREIGN KEY (ID_Utilisateur) REFERENCES Utilisateur(id),
-  FOREIGN KEY (ID_Produits) REFERENCES Produits(id)
+  date_commande DATE,
+  utilisateur_id INT REFERENCES UTILISATEUR(id),
+  produit_id INT REFERENCES PRODUIT(id),
+  quantite_commande INT,
+  prix_commande INT
 );
 
-CREATE TABLE Fournisseur (
-  id INT PRIMARY KEY,
-  nom VARCHAR(50)
+CREATE TABLE ARTICLE (
+  commande_id INT,
+  produit_id INT,
+  PRIMARY KEY (commande_id, produit_id),
+  FOREIGN KEY (commande_id) REFERENCES COMMANDE(id),
+  FOREIGN KEY (produit_id) REFERENCES PRODUIT(id)
 );
 
-CREATE TABLE InfoProduit (
+CREATE TABLE PRODUIT (
   id INT PRIMARY KEY,
-  maison VARCHAR(50),
-  famille VARCHAR(50),
-  region VARCHAR(50)
+  nom VARCHAR(50),
+  prix FLOAT,
+  description VARCHAR(255),
+  annee YEAR,
+  quantite_stock INT,
+  reference VARCHAR(50),
+  fournisseur_id INT REFERENCES FOURNISSEUR(id),
+  info_id INT,
+  maison_id INT REFERENCES MAISON(id),
+  famille_id INT REFERENCES FAMILLE(id),
+  region_id INT REFERENCES REGION(id)
 );
+
