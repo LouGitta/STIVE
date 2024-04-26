@@ -75,7 +75,9 @@ Table produit as PRODUIT {
 
 CREATE TABLE `article` (
   `commande_id` int(11) NOT NULL,
-  `produit_id` int(11) NOT NULL
+  `produit_id` int(11) NOT NULL,
+  `prix` float DEFAULT NULL,
+  `quantite` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -96,50 +98,6 @@ CREATE TABLE `commande` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `famille`
---
-
-CREATE TABLE `famille` (
-  `id` int(11) NOT NULL,
-  `famille` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `fournisseur`
---
-
-CREATE TABLE `fournisseur` (
-  `id` int(11) NOT NULL,
-  `nom` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `maison`
---
-
-CREATE TABLE `maison` (
-  `id` int(11) NOT NULL,
-  `maison` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pays`
---
-
-CREATE TABLE `pays` (
-  `id` int(11) NOT NULL,
-  `pays` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `produit`
 --
 
@@ -150,25 +108,35 @@ CREATE TABLE `produit` (
   `description` varchar(255) DEFAULT NULL,
   `annee` year(4) DEFAULT NULL,
   `quantite_stock` int(11) DEFAULT NULL,
-  `reference` varchar(50) DEFAULT NULL,
-  `fournisseur_id` int(11) DEFAULT NULL,
-  `info_id` int(11) DEFAULT NULL,
-  `maison_id` int(50) DEFAULT NULL,
-  `famille_id` int(50) DEFAULT NULL,
-  `region_id` int(50) DEFAULT NULL
+  `reference` varchar(255) DEFAULT NULL,
+  `fournisseur` varchar(255) DEFAULT NULL,
+  `info` varchar(250) DEFAULT NULL,
+  `maison` varchar(250) DEFAULT NULL,
+  `famille` varchar(250) DEFAULT NULL,
+  `region` varchar(250) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `region`
+-- Dumping data for table `produit`
 --
 
-CREATE TABLE `region` (
-  `id` int(11) NOT NULL,
-  `region` varchar(50) DEFAULT NULL,
-  `pays_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `produit` (`id`, `nom`, `prix`, `description`, `annee`, `quantite_stock`, `reference`, `fournisseur`, `info`, `maison`, `famille`, `region`, `image`) VALUES
+(1, 'Château Margaux', 300, 'Grand cru classé de Margaux', 2010, 10, 'CM2010', 'Château Margaux', 'Grand cru classé de Margaux 2010', 'Château Margaux', 'Rouge', 'Bordeaux', NULL),
+(2, 'Château Lafite Rothschild', 500, 'Grand cru classé de Pauillac', 2012, 8, 'CL2012', 'Château Lafite Rothschild', 'Grand cru classé de Pauillac 2012', 'Château Lafite Rothschild', 'Rouge', 'Bordeaux', NULL),
+(3, 'Dom Pérignon', 200, 'Champagne millésimé', 2008, 15, 'DP2008', 'Moët & Chandon', 'Champagne millésimé 2008', 'Moët & Chandon', 'Champagne', 'Champagne', NULL),
+(4, 'Puligny-Montrachet', 150, 'Vin blanc de Bourgogne', 2015, 12, 'PM2015', 'Domaine Leflaive', 'Vin blanc de Bourgogne 2015', 'Domaine Leflaive', 'Blanc', 'Bourgogne', NULL),
+(5, 'Château d\'Yquem', 400, 'Grand cru classé de Sauternes', 2011, 7, 'CY2011', 'Château d\'Yquem', 'Grand cru classé de Sauternes 2011', 'Château d\'Yquem', 'Doux', 'Bordeaux', NULL),
+(6, 'Château Haut-Brion', 450, 'Grand cru classé de Pessac-Léognan', 2014, 9, 'CHB2014', 'Château Haut-Brion', 'Grand cru classé de Pessac-Léognan 2014', 'Château Haut-Brion', 'Rouge', 'Bordeaux', NULL),
+(7, 'Cristal', 350, 'Champagne millésimé', 2012, 6, 'C2012', 'Louis Roederer', 'Champagne millésimé 2012', 'Louis Roederer', 'Champagne', 'Champagne', NULL),
+(8, 'Romanée-Conti', 1200, 'Grand cru de Bourgogne', 2016, 3, 'RC2016', 'Domaine de la Romanée-Conti', 'Grand cru de Bourgogne 2016', 'Domaine de la Romanée-Conti', 'Rouge', 'Bourgogne', NULL),
+(9, 'Château Cheval Blanc', 550, 'Grand cru classé de Saint-Émilion', 2013, 5, 'CCB2013', 'Château Cheval Blanc', 'Grand cru classé de Saint-Émilion 2013', 'Château Cheval Blanc', 'Rouge', 'Bordeaux', NULL),
+(10, 'Screaming Eagle', 2500, 'Vin de Californie', 2015, 2, 'SE2015', 'Screaming Eagle', 'Vin de Californie 2015', 'Screaming Eagle', 'Rouge', 'Napa Valley', NULL),
+(11, 'Opus One', 350, 'Vin de Californie', 2016, 4, 'OO2016', 'Opus One Winery', 'Vin de Californie 2016', 'Opus One Winery', 'Rouge', 'Napa Valley', NULL),
+(12, 'Château Mouton Rothschild', 400, 'Grand cru classé de Pauillac', 2014, 8, 'CMR2014', 'Château Mouton Rothschild', 'Grand cru classé de Pauillac 2014', 'Château Mouton Rothschild', 'Rouge', 'Bordeaux', NULL),
+(13, 'Château Palmer', 250, 'Grand cru classé de Margaux', 2013, 6, 'CP2013', 'Château Palmer', 'Grand cru classé de Margaux 2013', 'Château Palmer', 'Rouge', 'Bordeaux', NULL),
+(14, 'Krug', 300, 'Champagne millésimé', 2011, 9, 'K2011', 'Krug', 'Champagne millésimé 2011', 'Krug', 'Champagne', 'Champagne', NULL),
+(15, 'Château Latour', 600, 'Grand cru classé de Pauillac', 2015, 3, 'CLT2015', 'Château Latour', 'Grand cru classé de Pauillac 2015', 'Château Latour', 'Rouge', 'Bordeaux', NULL);
 
 -- --------------------------------------------------------
 
@@ -205,51 +173,38 @@ ALTER TABLE `commande`
   ADD KEY `produit_id` (`produit_id`);
 
 --
--- Indexes for table `famille`
---
-ALTER TABLE `famille`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `fournisseur`
---
-ALTER TABLE `fournisseur`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `maison`
---
-ALTER TABLE `maison`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `pays`
---
-ALTER TABLE `pays`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `produit`
 --
 ALTER TABLE `produit`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fournisseur_id` (`fournisseur_id`),
-  ADD KEY `maison_id` (`maison_id`),
-  ADD KEY `famille_id` (`famille_id`),
-  ADD KEY `region_id` (`region_id`);
-
---
--- Indexes for table `region`
---
-ALTER TABLE `region`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pays_id` (`pays_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `utilisateur`
 --
 ALTER TABLE `utilisateur`
   ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `commande`
+--
+ALTER TABLE `commande`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `produit`
+--
+ALTER TABLE `produit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- AUTO_INCREMENT for table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -268,18 +223,3 @@ ALTER TABLE `article`
 ALTER TABLE `commande`
   ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`),
   ADD CONSTRAINT `commande_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
-
---
--- Constraints for table `produit`
---
-ALTER TABLE `produit`
-  ADD CONSTRAINT `produit_ibfk_1` FOREIGN KEY (`fournisseur_id`) REFERENCES `fournisseur` (`id`),
-  ADD CONSTRAINT `produit_ibfk_2` FOREIGN KEY (`maison_id`) REFERENCES `maison` (`id`),
-  ADD CONSTRAINT `produit_ibfk_3` FOREIGN KEY (`famille_id`) REFERENCES `famille` (`id`),
-  ADD CONSTRAINT `produit_ibfk_4` FOREIGN KEY (`region_id`) REFERENCES `region` (`id`);
-
---
--- Constraints for table `region`
---
-ALTER TABLE `region`
-  ADD CONSTRAINT `region_ibfk_1` FOREIGN KEY (`pays_id`) REFERENCES `pays` (`id`);
