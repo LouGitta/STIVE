@@ -5,3 +5,12 @@
 
 
 <img width="622" alt="Capture d’écran 2024-03-19 à 21 58 26" src="https://github.com/LouGitta/STIVE/assets/25390209/567e274c-b105-4b43-801f-75c406d4bd03">
+
+
+
+
+<hr>
+DOCUMENTATION
+
+[Documentation Paris](https://paris.readthedocs.io/en/latest/index.html) <br>
+[Documentation Idiorm](https://idiorm.readthedocs.io/en/latest/index.html)
