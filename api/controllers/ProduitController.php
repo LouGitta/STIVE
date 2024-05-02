@@ -8,7 +8,7 @@ class ProduitController {
     
     public $att_produit = ['id', 'nom', 'prix','description', 'annee', 'quantite_stock', 'reference', 'fournisseur', 'info', 'maison', 'famille', 'region', 'image'];
 
-    function get($id){
+    function get($id, $param){
         if ($id) {
 
             $produit = Produit::find_one($id);
@@ -18,6 +18,26 @@ class ProduitController {
                 http_response_code(404);
                 echo json_encode(["error" => "Produit non trouve"]);
             }
+        } elseif ($param) {
+            $tableau = [];
+            foreach($param as $key => $value){
+                $produits = Produit::where($key,$value)->find_many();
+                foreach ($produits as $p) {
+                    $produitArray = [];
+                    foreach ($this->att_produit as $att) {
+                        $produitArray[$att] = $p->$att;
+                    }
+                    // print_r($produitArray);
+                    $tableau[] = $produitArray;
+                }
+            }
+            $unique_tableau = [];
+            foreach ($tableau as $element) {
+                $unique_tableau[$element['id']] = $element;
+            }
+            $produits = array_values($unique_tableau);
+            echo json_encode($produits);
+
 
         } else {
             $produits = Produit::find_many();

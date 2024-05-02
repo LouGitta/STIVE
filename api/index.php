@@ -7,8 +7,13 @@ require_once __DIR__ . '/controllers/UtilisateurController.php';
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
 $method = $_SERVER['REQUEST_METHOD'];
-$data = json_decode(file_get_contents('php://input'));
+// echo $_SERVER['REQUEST_URI'];
+// print_r($_GET);
+// foreach($_GET as $key => $value){
+//     echo $key . " : " . $value . "<br />\r\n";
+// }
 
+$data = json_decode(file_get_contents('php://input'));
 $base_url = "/STIVE/api/";
 $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
@@ -19,6 +24,7 @@ if (isset($url_list[1]) && is_numeric($url_list[1])) {
 } else {
     $id = '';
 }
+
 // Page redirect
 switch ($url_list[0]) {
     case '':
@@ -46,7 +52,7 @@ switch ($url_list[0]) {
 if ($controller) {
     switch ($method) {
         case 'GET':
-            $controller->get($id);
+            $controller->get($id, $_GET);
             break;
         case 'POST':
             $controller->post($data);
