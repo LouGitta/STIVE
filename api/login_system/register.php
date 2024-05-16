@@ -6,7 +6,7 @@ if (isset($_POST['register'])) {
         die("Connection failed: " . $mysqli->connect_error);
     }
 
-    $stmt = $mysqli->prepare("INSERT INTO users (nom, prenom, mail, mdp) VALUES (?, ?, ?, ?)");
+    $stmt = $mysqli->prepare("INSERT INTO utilisateurs (nom, prenom, mail, mdp) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $nom, $prenom, $mail, $mdp);
 
     $nom = $_POST['nom'];
