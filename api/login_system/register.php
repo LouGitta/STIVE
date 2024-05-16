@@ -7,13 +7,13 @@ if (isset($_POST['register'])) {
     }
 
     $stmt = $mysqli->prepare("INSERT INTO users (nom, prenom, mail, mdp) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $nom, $prenom, $mail, $password);
+    $stmt->bind_param("ssss", $nom, $prenom, $mail, $mdp);
 
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $email = $_POST['mail'];
-    $password = $_POST['mdp'];
-    $password = password_hash($password, PASSWORD_DEFAULT);
+    $mdp = $_POST['mdp'];
+    $mdp = password_hash($mdp, PASSWORD_DEFAULT);
 
     if ($stmt->execute()) {
         echo "CA MARCHE!";
