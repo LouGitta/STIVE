@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_POST['login'])) {
-    $mysqli = new mysqli("localhost", "root", "", "stive");
+    $mysqli = new mysqli("localhost", "root", "admin", "stive");
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
@@ -11,7 +11,7 @@ if (isset($_POST['login'])) {
     $mail = mysqli_real_escape_string($mysqli, $_POST['mail']);
     $mdp = mysqli_real_escape_string($mysqli, $_POST['mdp']);
 
-    $stmt = $mysqli->prepare("SELECT id, mdp FROM utilisateurs WHERE mail = ?");
+    $stmt = $mysqli->prepare("SELECT id, mdp FROM utilisateur WHERE mail = ?");
     $stmt->bind_param("s", $mail);
 
     $stmt->execute();
@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
             $_SESSION['loggedin'] = true;
             $_SESSION['id'] = $id;
             $_SESSION['mail'] = $mail;
-           //  header("Location:");  FAUT METTRE LENDROIT OU LE LOGIN NOUS EMMENE
+            header("Location:http://localhost/STIVE/front/");
             exit;
         } else {
             echo "Mauvais mot de passe!";
@@ -44,5 +44,7 @@ if (isset($_POST['login'])) {
     <input id="mail" name="mail" required="" type="text" />
     <label for="mdp">Mdp:</label>
     <input id="mdp" name="mdp" required="" type="password" />
-    <input name="login" type="submit" value="Login" />
+    <input name="login" type="submit" value="Se connecter" />
+    <br>
+    Pas encore inscrit : <a href="http://localhost/STIVE/api/login_system/register.php">S'inscrire</a>
 </form>

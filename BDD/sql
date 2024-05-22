@@ -103,7 +103,7 @@ CREATE TABLE `commande` (
 
 CREATE TABLE `produit` (
   `id` int(11) NOT NULL,
-  `nom` varchar(50) DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
   `prix` float DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `annee` year(4) DEFAULT NULL,
@@ -146,10 +146,10 @@ INSERT INTO `produit` (`id`, `nom`, `prix`, `description`, `annee`, `quantite_st
 
 CREATE TABLE `utilisateur` (
   `id` int(11) NOT NULL,
-  `nom` varchar(50) DEFAULT NULL,
-  `prenom` varchar(50) DEFAULT NULL,
-  `mdp` varchar(50) DEFAULT NULL,
-  `mail` varchar(50) DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `mdp` varchar(255) DEFAULT NULL,
+  `mail` varchar(255) DEFAULT NULL,
   `is_client` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
