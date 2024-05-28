@@ -1,17 +1,17 @@
 <?php
 if (isset($_POST['register'])) {
-    $mysqli = new mysqli("localhost", "root", "", "stive");
+    $mysqli = new mysqli("localhost", "root", "admin", "stive");
 
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
 
-    $stmt = $mysqli->prepare("INSERT INTO utilisateurs (nom, prenom, mail, mdp) VALUES (?, ?, ?, ?)");
+    $stmt = $mysqli->prepare("INSERT INTO utilisateur (nom, prenom, mail, mdp) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $nom, $prenom, $mail, $mdp);
 
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
-    $email = $_POST['mail'];
+    $mail = $_POST['mail'];
     $mdp = $_POST['mdp'];
     $mdp = password_hash($mdp, PASSWORD_DEFAULT);
 
@@ -37,5 +37,8 @@ if (isset($_POST['register'])) {
   <input id="mail" name="mail" required="" type="email" />
   <label for="mdp">Mdp:</label>
   <input id="mdp" name="mdp" required="" type="password" />
-  <input name="register" type="submit" value="Register" />
+  <input name="register" type="submit" value="S'inscrire" />
+  <br>
+  Déjà inscrit : <a href="http://localhost/STIVE/api/login_system/login.php">Se connecter</a>
+
 </form>
