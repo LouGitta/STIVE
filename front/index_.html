@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>CUBE</h1>
+
+			<nav>
+				<!-- si pas d'utilisateur -->
+				<a href="#" class="noUserElement hidden">Connexion</a>
+
+				<!-- si utilisateur -->
+				<a href="#" class="userElement hidden">Panier</a>
+				<a href="#" class="userElement hidden">Commandes</a>
+				<button class="userElement hidden">Déconnexion</button>
+			</nav>
+		</header>
+
+		<main>
+			<!-- si utilisateur -->
+			<section class="user--container userElement hidden">
+				<p>Bonjour <span></span></p>
+			</section>
+
+			<!-- filtres -->
+			<section>
+				<h2>Filtres</h2>
+
+				<h3>Type de vin</h3>
+				<div class="filters--type--container">
+					<button class="filter" value="Rouge">Rouge</button>
+					<button class="filter" value="Blanc">Blanc</button>
+				</div>
+			</section>
+
+			<section>
+				<h2>Produits</h2>
+
+				<!-- reçoit les cartes crées à partir de la liste des produits récupérés -->
+				<div class="cards--container">
+					<p class="errorMessageElement hidden"></p>
+				</div>
+
+				<!-- modèle de cartes -->
+				<template id="templateCard">
+					<!-- lien pour atteindre lapage "détail-produit" -->
+					<a href="" class="card--container">
+						<div class="card--wrapper">
+							<div class="card--image">
+								<!-- image du produit -->
+								<img src="https://dummyimage.com/600x400" alt="" />
+							</div>
+
+							<div class="card--content">
+								<!-- nom du produit -->
+								<h3 class="nom"></h3>
+								<!-- région du produit -->
+								<h3 class="region"></h3>
+								<!-- grape du produit -->
+								<h3 class="famille"></h3>
+							</div>
+						</div>
+					</a>
+				</template>
+			</section>
+		</main>
+
+		<footer>
+			<nav>
+				<a href="#">Confidentialité</a>
+				<a href="#">Conditions d'utilisation</a>
+			</nav>
+
+			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
+		</footer>
+	</body>
+
+	<script>
+		window.addEventListener("load", initApp);
+
+		async function initApp() {
+			// vérifier si utilisateur connecté //
+			const user = getUser();
+
+			// si non connecté //
+			if (!user) {
+				displayNoUserElements();
+			} else {
+				displayUserElements();
+			}
+
+			// obtenir les données depuis des produits //
+			const products = await getProducts();
+
+			// si erreur afficher un message //
+			if (!products) {
+				displayNoProductsElements();
+			}
+			// créer et ajouter les cartes au DOM //
+			else {
+				displayProductsElements(products);
+				// mise en place des filtres //
+				initFilters();
+			}
+		}
+
+		// vérifier si utilisateur connecté //
+		function getUser() {
+			if (!window.localStorage.getItem("user")) {
+				return null;
+			} else {
+				return JSON.parse(window.localStorage.getItem("user"));
+			}
+		}
+
+		// si non connecté //
+		function displayNoUserElements() {
+			const noUserElements = document.querySelectorAll(".noUserElement");
+			for (let element of noUserElements) {
+				element.classList.toggle("hidden");
+			}
+		}
+
+		// si connecté //
+		function displayUserElements() {
+			const userElements = document.querySelectorAll(".userElement");
+			for (let element of userElements) {
+				element.classList.toggle("hidden");
+			}
+
+			const user = getUser();
+			const userNameElement = document.querySelector(".user--container span");
+			userNameElement.innerHTML = user.name;
+		}
+
+		// obtenir les données depuis des produits //
+		async function getProducts() {
+			// url pour récupérer ma liste d'articles //
+			const url = "http://localhost/STIVE/api/produit";
+
+			try {
+				// récupération des données depuis l'api //
+				const response = await fetch(url);
+				const data = await response.json();
+				console.table(data);
+
+				return data;
+			} catch (error) {
+				// si erreur, on affiche le message //
+				console.log(error.message);
+			}
+		}
+
+		// si erreur afficher un message //
+		function displayNoProductsElements() {
+			const message = "Il n'y a pas d'article à présenter !";
+			const errorMessageElement = document.querySelector(
+				".errorMessageElement"
+			);
+
+			errorMessageElement.innerHTML = message;
+			errorMessageElement.classList.toggle("hidden");
+		}
+
+		// affichage des produits //
+		function displayProductsElements(products) {
+			// l'élément qui reçoit les cartes //
+			const container = document.querySelector(".cards--container");
+
+			for (let product of products) {
+				// le template pour créer les cartes plus simplement //
+				const template = document
+					.querySelector("#templateCard")
+					.content.cloneNode(true);
+
+				// href => redirection vers page détail du produit //
+				template.querySelector("a").href = `http://localhost/STIVE/api/produit/${product.id}`;
+				// dataset pour faciliter le travail avec les filtres //
+				template.querySelector("a").dataset.famille = product.famille;
+
+				// afficher les informations dans les cartes //
+				template.querySelector(".nom").innerHTML = product.nom;
+				template.querySelector(".region").innerHTML = product.region;
+				template.querySelector(".famille").innerHTML = product.famille;
+
+				// ne pas oublier d'insérer les cartes dans leur container //
+				container.appendChild(template);
+			}
+		}
+
+		// mise en place des filtres //
+		function initFilters() {
+			const filters = document.querySelectorAll(".filter");
+
+			for (let filter of filters) {
+				filter.addEventListener("click", handleFilterClick);
+			}
+		}
+
+		// @clik sur un filtre //
+		function handleFilterClick(event) {
+			const filterType = event.currentTarget.value;
+
+			const cards = document.querySelectorAll(".card--container");
+			for (let card of cards) {
+				if (card.dataset["famille"] === filterType) {
+					showCard(card);
+				} else {
+					hideCard(card);
+				}
+			}
+		}
+
+		function showCard(card) {
+			if (card.classList.contains("hidden")) {
+				card.classList.toggle("hidden");
+			}
+		}
+
+		function hideCard(card) {
+			if (!card.classList.contains("hidden")) {
+				card.classList.toggle("hidden");
+			}
+		}
+	</script>
+</html> 
