@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['register'])) {
-    $mysqli = new mysqli("localhost", "root", "admin", "stive");
+    $mysqli = new mysqli("localhost", "root", "", "stive");
 
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);

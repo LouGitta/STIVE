@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_POST['login'])) {
-    $mysqli = new mysqli("localhost", "root", "admin", "stive");
+    $mysqli = new mysqli("localhost", "root", "", "stive");
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
