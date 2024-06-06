@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Panier</title>
+
+		<link rel="stylesheet" href="style/style.css">
+	</head>
+	<body>
+		<header>
+			<h1>STIVE</h1>
+
+			<nav>
+				<!-- si pas d'utilisateur -->
+				<a href="http://localhost/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
+
+				<!-- si utilisateur -->
+                <a href="http://localhost/STIVE/front/commandes" class="userElement hidden">Commandes</a>
+				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
+			</nav>
+		</header>
+
+		<main>
+			<div class="breadcrumb">
+				<a class="bread-acceuil" href="http://localhost/STIVE/front/">Accueil</a> / <span class="panier-page">panier</span>
+			</div>
+			<!-- si utilisateur -->
+			<section class="user--container userElement hidden">
+				<p>Bonjour <span></span></p>
+			</section>
+
+			<section>
+				<div class="panier--container">
+					<div class="panier--title"> 
+						<h3 >1-Panier</h3>
+					</div>
+					<div class="panier--recapitulatif">
+						<div class="produit--panier">
+							<div class="produit-container">
+								<p class="errorMessageElement hidden"></p>
+							</div>
+							<template id="produitPanier" >
+								<div class="produitPanier">
+									<div class="image--panier">
+										<img src="https://dummyimage.com/150x150" alt="" />
+									</div>
+									<div class="info--panier">
+										<div class="info--panier--produit">
+											<p class="nom"></p>
+											<p class="region"></p>
+											<p class="famille"></p>
+										</div>
+										<div class="prix--panier--produit">
+											<p class="prix--cumul"></p>
+											<p class="prix--unite"></p>
+										</div>
+										<div class="quantite--panier--produit">
+											<p class="quantite"></p>
+										</div>
+
+									</div>
+								</div>
+							</template>
+							
+						</div>
+						<div class="recapitulatif--confirmer--panier">
+							<div class="recapitulatif">
+								<h1>Récapitulatif :</h1>
+								<div class="quantite--total--recapitulatif">
+									<h4>Nombre total de produit</h4>
+									<h4 class="quantite--total">0 produits</h4>
+								</div>
+								<div class="prix--total--recapitulatif">
+									<h1>TOTAL</h1>
+									<h1 class="sous--total">0 €</h1>
+								</div>
+							</div>
+							<div class="confirmer--panier">
+								<button onclick="validerPanier()" class="btn">Valider votre panier + paiement ok</button>
+							</div>
+						</div>
+
+					</div>
+					<div class="panier--title"> 
+							<h3 >2-Livraison</h3>
+					</div>
+					<div class="panier--livraison">
+						<h3>Adresse de livraison</h3>
+						<form class="form--livraison">
+							<div>
+								<input type="text" class="livraison--form" id="nom" name="nom" placeholder="Nom" required>
+								<input type="text" class="livraison--form" id="prenom" name="prenom" placeholder="Prenom" required>
+							</div>
+							<div>
+								<input type="text" class="livraison--form" id="adresse" name="adresse" placeholder="Adresse" required>
+							</div>
+							<div>
+								<input type="text" class="livraison--form" id="code" name="code" placeholder="Code Postal" required>
+								<input type="text" class="livraison--form" id="ville" name="ville" placeholder="Ville" required>
+							</div>
+							<div>
+								<input type="text" class="livraison--form" id="telephone" name="telephone" placeholder="Telephone" required>
+							</div>
+							<div>
+								<textarea name="precision" id="precision" rows="5"></textarea>
+							</div>
+							<button onclick="validerAdresse()" class="livraison btn"></button>
+								</form>
+					</div>
+
+					<div class="panier--title"> 
+						<h3 >3-Paiement</h3>
+					</div>
+					Rickroll
+				</div>
+
+			</section>
+		</main>
+
+		<footer>
+			<nav>
+				<a href="#">Confidentialité</a>
+				<a href="#">Conditions d'utilisation</a>
+			</nav>
+
+			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
+		</footer>
+	</body>
+
+	<script>
+		window.addEventListener("load", initApp);
+
+		async function initApp() {
+			// vérifier si utilisateur connecté //
+			const user = getUser();
+
+			// si non connecté //
+			if (!user) {
+				displayNoUserElements();
+			} else {
+				displayUserElements();
+			}
+
+			// obtenir les données depuis des produits //
+			const panier = await getProduitsPanier();
+
+			// si erreur afficher un message //
+			if (!panier) {
+				displayNoProductsElements();
+			}
+			// créer et ajouter les cartes au DOM //
+			else {
+				displayProductsElements(panier);
+			}
+		 }
+
+		// vérifier si utilisateur connecté //
+		function getUser() {
+			if (!window.localStorage.getItem("user")) {
+				return null;
+			} else {
+				return JSON.parse(window.localStorage.getItem("user"));
+			}
+		}
+
+		// si non connecté //
+		function displayNoUserElements() {
+			const noUserElements = document.querySelectorAll(".noUserElement");
+			for (let element of noUserElements) {
+				element.classList.toggle("hidden");
+			}
+		}
+
+		// si connecté //
+		function displayUserElements() {
+			const userElements = document.querySelectorAll(".userElement");
+			for (let element of userElements) {
+				element.classList.toggle("hidden");
+			}
+
+			const user = getUser();
+			const userNameElement = document.querySelector(".user--container span");
+			userNameElement.innerHTML = user.name;
+		}
+
+		// obtenir les données depuis des produits //
+		async function getProduitsPanier() {
+			// url pour récupérer ma liste d'articles //
+			const produits = JSON.parse(localStorage.getItem('panier'))
+			
+			if (produits) {
+				console.table(produits)
+				return produits
+			}
+		}
+
+		// si erreur afficher un message //
+		function displayNoProductsElements() {
+			const message = "Il n'y a pas d'article dans le panier !";
+			const errorMessageElement = document.querySelector(
+				".errorMessageElement"
+			);
+
+			errorMessageElement.innerHTML = message;
+			errorMessageElement.classList.toggle("hidden");
+		}
+
+		// affichage des produits //
+		function displayProductsElements(panier) {
+			// l'élément qui reçoit les cartes //
+			const container = document.querySelector(".produit--panier");
+
+			var prixTotal = 0;
+			var quantiteTotal = 0;
+
+			for (let produit of panier) {
+				// le template pour créer les cartes plus simplement //
+				const template = document
+					.querySelector("#produitPanier")
+					.content.cloneNode(true);
+
+				// dataset pour faciliter le travail avec les filtres //
+				const quantite = produit.quantite
+				const prixUnite = produit.produit.prix;
+				const totalProduit = quantite*prixUnite;
+
+				quantiteTotal += parseInt(quantite);
+				prixTotal += totalProduit;
+				// afficher les informations dans les cartes //
+				template.querySelector(".nom").innerHTML = produit.produit.nom;
+				template.querySelector(".region").innerHTML = produit.produit.region;
+				template.querySelector(".famille").innerHTML = produit.produit.famille;
+				template.querySelector(".quantite").innerHTML = quantite;
+				template.querySelector(".prix--cumul").innerHTML = totalProduit +' €';
+				template.querySelector(".prix--unite").innerHTML = produit.produit.prix+'€ / unité';
+				console.log(template)
+
+				// ne pas oublier d'insérer les cartes dans leur container //
+				container.appendChild(template);
+
+				
+			}
+			document.querySelector(".quantite--total").innerHTML = quantiteTotal + ' produits';
+			document.querySelector(".sous--total").innerHTML = prixTotal + ' €';
+		}
+
+        function disconnect(){
+            window.localStorage.removeItem("user")
+            location.reload()
+        }
+
+		function validerPanier() {
+
+		}
+	</script>
+</html> 
