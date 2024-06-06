@@ -1,104 +1,77 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>CUBE - Affichage des articles</title>
-		<style>
-			body {
-				font-family: Arial, sans-serif;
-				margin: 0;
-				padding: 0;
-			}
-			header,
-			footer {
-				background-color: #333;
-				color: white;
-				text-align: center;
-				padding: 1em 0;
-			}
-			nav {
-				margin: 0.5em 0;
-			}
-			nav a {
-				color: white;
-				margin: 0 1em;
-				text-decoration: none;
-			}
-			main {
-				padding: 2em;
-			}
-			table {
-				width: 100%;
-				border-collapse: collapse;
-				margin-top: 1em;
-			}
-			table,
-			th,
-			td {
-				border: 1px solid #ddd;
-			}
-			th,
-			td {
-				padding: 0.5em;
-				text-align: left;
-			}
-			th {
-				background-color: #f2f2f2;
-			}
-		</style>
-	</head>
+		<title>Document</title>
 
+		<link rel="stylesheet" href="./style/style.css" />
+	</head>
 	<body>
 		<header>
-			<h1>CUBE</h1>
-			<!-- à modifier selon les pages prévues -->
+			<h1>STIVE</h1>
+
 			<nav>
-				<a href="#">Panier</a>
-				<a href="#">Commandes</a>
-				<a href="http://localhost/STIVE/api/login_system/login.php">Connexion</a>
-                
+				<!-- si pas d'utilisateur -->
+				<a href="http://localhost/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
+				<a  onclick="force()">HARD</a>
+
+
+				<!-- si utilisateur -->
+				<a href="http://localhost/STIVE/front/panier" class="userElement hidden">Panier</a>
+				<a href="http://localhost/STIVE/front/commandes" class="userElement hidden">Commandes</a>
+				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
+				
 			</nav>
 		</header>
 
 		<main>
-			<h2>Mes articles</h2>
+			<!-- si utilisateur -->
+			<section class="user--container userElement hidden">
+				<p>Bonjour <span></span></p>
+			</section>
 
-			<table id="articlesTable">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Nom</th>
-						<th>Prix</th>
-						<th>Annee</th>
-						<th>Description</th>
-						<th>Maison</th>
-						<th>Région</th>
-						<th>Famille</th>
-					</tr>
-				</thead>
+			<!-- filtres -->
+			<section>
+				<h2>Filtres</h2>
 
-				<tbody id="tableBodyArticles">
-					<!-- le template sert de modèle pour créer les lignes recevants les donnéesdes articles -->
-					<template id="templateRow">
-						<tr>
-							<!-- on attribue une classe pour cibler plus facilement chaque élément depuis le js -->
-							<td class="id"></td>
-							<td class="nom"></td>
-							<td class="prix"></td>
-							<td class="annee"></td>
-							<td class="description"></td>
-							<td class="maison"></td>
-							<td class="region"></td>
-							<td class="famille"></td>
-							<td>
-								<!-- pour commander un article  -->
-								<button>Commander</button>
-							</td>
-						</tr>
-					</template>
-				</tbody>
-			</table>
+				<h3>Type de vin</h3>
+				<div class="filters--type--container">
+					<button class="filter" value="Rouge">Rouge</button>
+					<button class="filter" value="Blanc">Blanc</button>
+				</div>
+			</section>
+
+			<section>
+				<h2>Produits</h2>
+
+				<!-- reçoit les cartes crées à partir de la liste des produits récupérés -->
+				<div class="cards--container">
+					<p class="errorMessageElement hidden"></p>
+				</div>
+
+				<!-- modèle de cartes -->
+				<template id="templateCard">
+					<!-- lien pour atteindre lapage "détail-produit" -->
+					<a href="" class="card--container">
+						<div class="card--wrapper">
+							<div class="card--image">
+								<!-- image du produit -->
+								<img src="https://dummyimage.com/600x400" alt="" />
+							</div>
+
+							<div class="card--content">
+								<!-- nom du produit -->
+								<h3 class="nom"></h3>
+								<!-- région du produit -->
+								<h3 class="region"></h3>
+								<!-- grape du produit -->
+								<h3 class="famille"></h3>
+							</div>
+						</div>
+					</a>
+				</template>
+			</section>
 		</main>
 
 		<footer>
@@ -109,68 +82,164 @@
 
 			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
 		</footer>
+	</body>
 
-		<script>
-			// quand la page est chargée //
-			window.addEventListener("load", initApp);
+	<script>
+		window.addEventListener("load", initApp);
 
-			// fonction d'initialisation de ma page //
-			async function initApp() {
-				// url pour récupérer ma liste d'articles //
-				const url = "http://localhost/STIVE/api/produit";
+		async function initApp() {
+			// vérifier si utilisateur connecté //
+			const user = getUser();
 
-				// requête asynchrone => try / catch obligatoire //
-				try {
-					// récupération des données depuis l'api //
-					const response = await fetch(url);
-					const data = await response.json();
-					console.table(data);
-
-					// affichage des données pour chaque article //
-					data.forEach((article) => {
-						displayArticle(article);
-						handleCommander(article);
-					});
-				} catch (error) {
-					// si erreur, on affiche le message //
-					console.log(error.message);
-				}
+			// si non connecté //
+			if (!user) {
+				displayNoUserElements();
+			} else {
+				displayUserElements();
 			}
 
-			function displayArticle(article) {
-				// on récupère le template de base pour chaque ligne dans la table //
+			// obtenir les données depuis des produits //
+			const products = await getProducts();
+
+			// si erreur afficher un message //
+			if (!products) {
+				displayNoProductsElements();
+			}
+			// créer et ajouter les cartes au DOM //
+			else {
+				displayProductsElements(products);
+				// mise en place des filtres //
+				initFilters();
+			}
+		}
+
+		// vérifier si utilisateur connecté //
+		function getUser() {
+			if (!window.localStorage.getItem("user")) {
+				return null;
+			} else {
+				return JSON.parse(window.localStorage.getItem("user"));
+			}
+		}
+
+		// si non connecté //
+		function displayNoUserElements() {
+			const noUserElements = document.querySelectorAll(".noUserElement");
+			for (let element of noUserElements) {
+				element.classList.toggle("hidden");
+			}
+		}
+
+		// si connecté //
+		function displayUserElements() {
+			const userElements = document.querySelectorAll(".userElement");
+			for (let element of userElements) {
+				element.classList.toggle("hidden");
+			}
+
+			const user = getUser();
+			const userNameElement = document.querySelector(".user--container span");
+			userNameElement.innerHTML = user.name;
+		}
+
+		// obtenir les données depuis des produits //
+		async function getProducts() {
+			// url pour récupérer ma liste d'articles //
+			const url = "http://localhost/STIVE/api/produit";
+
+			try {
+				// récupération des données depuis l'api //
+				const response = await fetch(url);
+				const data = await response.json();
+				console.table(data);
+
+				return data;
+			} catch (error) {
+				// si erreur, on affiche le message //
+				console.log(error.message);
+			}
+		}
+
+		// si erreur afficher un message //
+		function displayNoProductsElements() {
+			const message = "Il n'y a pas d'article à présenter !";
+			const errorMessageElement = document.querySelector(
+				".errorMessageElement"
+			);
+
+			errorMessageElement.innerHTML = message;
+			errorMessageElement.classList.toggle("hidden");
+		}
+
+		// affichage des produits //
+		function displayProductsElements(products) {
+			// l'élément qui reçoit les cartes //
+			const container = document.querySelector(".cards--container");
+
+			for (let product of products) {
+				// le template pour créer les cartes plus simplement //
 				const template = document
-					.querySelector("#templateRow")
+					.querySelector("#templateCard")
 					.content.cloneNode(true);
 
-				// on insère pour chaque ligne un attribut décrivant l'id de l'article
-				// bien plus pratique pour les manipulations et fonctionnalitées à venir //
-				template.querySelector("button").dataset.id = article.id;
+				// href => redirection vers page détail du produit //
+				template.querySelector("a").href = `http://localhost/STIVE/front/produit.html?=${product.id}`;
+				// dataset pour faciliter le travail avec les filtres //
+				template.querySelector("a").dataset.famille = product.famille;
 
-				// on insère les données pour chaque cellule de la ligne //
-				template.querySelector(".id").innerHTML = article.id;
-				template.querySelector(".nom").innerHTML = article.nom;
-				template.querySelector(".prix").innerHTML = article.prix;
-				template.querySelector(".annee").innerHTML = article.annee;
-				template.querySelector(".description").innerHTML = article.description;
-				template.querySelector(".maison").innerHTML = article.maison;
-				template.querySelector(".region").innerHTML = article.region;
-				template.querySelector(".famille").innerHTML = article.famille;
+				// afficher les informations dans les cartes //
+				template.querySelector(".nom").innerHTML = product.nom;
+				template.querySelector(".region").innerHTML = product.region;
+				template.querySelector(".famille").innerHTML = product.famille;
 
-				// on ajoute la ligne dans le DOM //
-				const tableBody = document.querySelector("#tableBodyArticles");
-				tableBody.appendChild(template);
+				// ne pas oublier d'insérer les cartes dans leur container //
+				container.appendChild(template);
 			}
+		}
 
-			function handleCommander(article) {
-				// on récupère le bouton correspondant à l'article //
-				const button = document.querySelector(`[data-id="${article.id}"]`);
+		// mise en place des filtres //
+		function initFilters() {
+			const filters = document.querySelectorAll(".filter");
 
-				// on affiche un message au click => ajouter dans le panier //
-				button.addEventListener("click", () => {
-					console.log(`Vous avez commandé l'article id : ${article.id}`);
-				});
+			for (let filter of filters) {
+				filter.addEventListener("click", handleFilterClick);
 			}
-		</script>
-	</body>
-</html>
+		}
+
+		// @clik sur un filtre //
+		function handleFilterClick(event) {
+			const filterType = event.currentTarget.value;
+
+			const cards = document.querySelectorAll(".card--container");
+			for (let card of cards) {
+				if (card.dataset["famille"] === filterType) {
+					showCard(card);
+				} else {
+					hideCard(card);
+				}
+			}
+		}
+
+		function showCard(card) {
+			if (card.classList.contains("hidden")) {
+				card.classList.toggle("hidden");
+			}
+		}
+
+		function hideCard(card) {
+			if (!card.classList.contains("hidden")) {
+				card.classList.toggle("hidden");
+			}
+		}
+
+		function disconnect(){
+            window.localStorage.removeItem("user")
+            location.reload()
+        }
+
+		function force(){
+            window.localStorage.setItem("user", JSON.stringify({"name":"Lou"}))
+            location.reload()
+        }
+	</script>
+</html> 
