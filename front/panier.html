@@ -77,7 +77,7 @@
 								</div>
 							</div>
 							<div class="confirmer--panier">
-								<button onclick="validerPanier()" class="btn">Valider votre panier + paiement ok</button>
+								<button onclick="validerPanier()" class="btn">Valider votre panier</button>
 							</div>
 						</div>
 
@@ -85,34 +85,41 @@
 					<div class="panier--title"> 
 							<h3 >2-Livraison</h3>
 					</div>
-					<div class="panier--livraison">
-						<h3>Adresse de livraison</h3>
-						<form class="form--livraison">
-							<div>
-								<input type="text" class="livraison--form" id="nom" name="nom" placeholder="Nom" required>
-								<input type="text" class="livraison--form" id="prenom" name="prenom" placeholder="Prenom" required>
-							</div>
-							<div>
-								<input type="text" class="livraison--form" id="adresse" name="adresse" placeholder="Adresse" required>
-							</div>
-							<div>
-								<input type="text" class="livraison--form" id="code" name="code" placeholder="Code Postal" required>
-								<input type="text" class="livraison--form" id="ville" name="ville" placeholder="Ville" required>
-							</div>
-							<div>
-								<input type="text" class="livraison--form" id="telephone" name="telephone" placeholder="Telephone" required>
-							</div>
-							<div>
-								<textarea name="precision" id="precision" rows="5"></textarea>
-							</div>
-							<button onclick="validerAdresse()" class="livraison btn"></button>
-								</form>
+					<div class="livraison--emptybox hidden" >
+						<div class="panier--livraison">
+							<h3>Adresse de livraison</h3>
+							<form class="form--livraison">
+								<div class="flex-space">
+									<input type="text" class="livraison--form" id="nom" name="nom" placeholder="Nom" >
+									<input type="text" class="livraison--form" id="prenom" name="prenom" placeholder="Prenom" >
+								</div>
+								<div>
+									<input type="text" class="livraison--form" id="adresse" name="adresse" placeholder="N° et Adresse" >
+								</div>
+								<div class="flex-space">
+									<input type="text" class="livraison--form" id="code" name="code" placeholder="Code Postal" >
+									<input type="text" class="livraison--form" id="ville" name="ville" placeholder="Ville" >
+								</div>
+								<div class="flex-space">
+									<input type="text" class="livraison--form" id="pays" name="pays" placeholder="Pays" >
+									<input type="text" class="livraison--form" id="telephone" name="telephone" placeholder="Telephone" >
+								</div>
+								<div>
+									<textarea name="precision" id="precision" rows="5" placeholder="Informations complémentaires pour faciliter la livraison"></textarea>
+								</div>
+								<button type="button" onclick="validerAdresse()" class="livraison btn">Valider les informations de livraison</button>
+							</form>
+						</div>
+						<div class="emptybox"></div>
 					</div>
 
 					<div class="panier--title"> 
 						<h3 >3-Paiement</h3>
 					</div>
-					Rickroll
+					<div class="paiement hidden">
+						<button type="button" onclick="validerPaiement()" class="paiement--btn">Payer</button>
+					</div>
+					
 				</div>
 
 			</section>
@@ -251,7 +258,84 @@
         }
 
 		function validerPanier() {
+			document.querySelector(".livraison--emptybox").classList.toggle("hidden");
+		}
 
+		function validerAdresse() {
+			document.querySelector(".paiement").classList.toggle("hidden");
+		}
+
+		function getDate() {
+			const today = new Date();
+			const year = today.getFullYear();
+			const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+			const day = String(today.getDate()).padStart(2, '0');
+
+			return `${year}-${month}-${day}`;
+		}
+
+		function validerPaiement() {
+			alert('Paiement validé !');
+
+			const data = JSON.parse(localStorage.getItem('panier'))
+
+			var produits = [];
+
+			var prixTotal = 0;
+			var quantiteTotal = 0;
+
+			for (let produit of data) {
+				// dataset pour faciliter le travail avec les filtres //
+				const id = produit.produit.id;
+				const quantite = produit.quantite
+				const prixUnite = produit.produit.prix;
+				const totalProduit = quantite*prixUnite;
+
+				quantiteTotal += parseInt(quantite);
+				prixTotal += totalProduit;
+
+				const panier = {
+				'produit': id,
+				'quantite': quantite,
+				'prix_unite' : prixUnite,
+				'total_produit' : totalProduit
+				};
+				
+				produits.push(panier)
+			}
+			
+			const commande = {
+				//'userid' : userid
+				'date_commande' : getDate(),
+				'quantite_commande': quantiteTotal,
+				'prix_commande': prixTotal,
+				'produits' : produits,
+			};
+			console.log(commande)
+			const url = "http://localhost/STIVE/api/produit";
+			
+			postCommande(url, commande)
+			.then(commande => {
+				console.log(commande);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+
+
+			// window.location.href ="http://localhost/STIVE/front/";
+		}
+
+		async function postCommande(url = '', data = {}) {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+				'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			return response.json();
 		}
 	</script>
 </html> 
