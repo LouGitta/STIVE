@@ -8,7 +8,7 @@
 --
 
 CREATE TABLE `utilisateur` (
-  `id`  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) DEFAULT NULL,
   `prenom` varchar(255) DEFAULT NULL,
   `mdp` varchar(255) DEFAULT NULL,
