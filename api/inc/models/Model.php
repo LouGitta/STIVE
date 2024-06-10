@@ -17,3 +17,9 @@ class Commande extends Model{
     public static $_table = "commande";
 
 }
+
+class Article extends Model{
+
+    public static $_table = "article";
+
+}

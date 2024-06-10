@@ -6,7 +6,8 @@ require_once __DIR__ . '/../inc/models/Model.php';
 
 class CommandeController {
     
-    public $att_commande = ['id', 'date_commande', 'utilisateur_id','produit_id', 'quantite_commande', 'prix_commande'];
+    public $att_commande = ['id', 'reference_commande', 'date_commande', 'utilisateur_id', 'quantite_commande', 'prix_commande'];
+    public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
     function get($id){
         if ($id) {
@@ -35,15 +36,45 @@ class CommandeController {
 
 
     function post($data){
-        $commande = Commande::create();
-        foreach ($this->att_commande as $att) {
-            if ($att !== 'id'){
-                $commande->$att = $data->$att;
+        $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s')), 8, 8);
+        try {
+            $commande = Commande::create();
+                foreach ($this->att_commande as $att) {
+                    if ($att !== 'id'){
+                        if ($att === 'reference_commande') {
+                            $commande->$att = $reference;
+                        } else if ($att === 'utilisateur_id') {
+                            '';
+                        } else {
+                        $commande->$att = $data->$att;
+                        }
+                    }
+                }
+            $commande->save();
+            $tab['id'] = $commande->id;
+            
+            foreach ($data->produits as $data) {
+                $article = Article::create();
+                    foreach ($this->att_article as $att) {
+                        if ($att !== 'id'){
+                            if ($att === 'commande_id') {
+                                $article->$att =  $tab['id'];
+                            } else {
+                                $article->$att = $data->$att;
+                            }
+                        }
+                    }
+                $article->save();
             }
+
+
+            $succes = array('status' => 'Validé', 'message' => 'La commande est validée', 'numero' => $reference);
+            echo json_encode($succes, JSON_UNESCAPED_UNICODE);
+
+        } catch (Exception $e) {
+            $error = array('error' => $e, 'message' => 'La commande a échoué');
+            echo json_encode($error, JSON_UNESCAPED_UNICODE);
         }
-        $commande->save();
-        $tab['id'] = $commande->id;
-        echo json_encode($tab);
 
     }
 
