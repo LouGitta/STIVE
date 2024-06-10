@@ -12,7 +12,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 // foreach($_GET as $key => $value){
 //     echo $key . " : " . $value . "<br />\r\n";
 // }
-
+$headers = getallheaders();
 $data = json_decode(file_get_contents('php://input'));
 $base_url = "/STIVE/api/";
 $page = str_replace($base_url, '', $url);
@@ -52,10 +52,10 @@ switch ($url_list[0]) {
 if ($controller) {
     switch ($method) {
         case 'GET':
-            $controller->get($id, $_GET);
+            $controller->get($id, $_GET, $data);
             break;
         case 'POST':
-            $controller->post($data);
+            $controller->post($data, $headers);
             break;
         case 'PATCH':
             $controller->patch($id, $data);
