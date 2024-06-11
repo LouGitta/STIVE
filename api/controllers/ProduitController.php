@@ -4,6 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 
+
 class ProduitController {
     
     public $att_produit = ['id', 'nom', 'prix','description', 'annee', 'quantite_stock', 'reference', 'fournisseur', 'info', 'maison', 'famille', 'region', 'image'];
@@ -54,11 +55,41 @@ class ProduitController {
     }
 
 
-    function post($data){
+    function post($data, $param, $image){
+        
+        if (isset($image)) {
+            $image_name = basename($image['name']);
+            $dossier_cible = __DIR__ . "/../../front/imageProduit/";
+            $lieu_image = $dossier_cible . $image_name;
+            $fileType = pathinfo($lieu_image, PATHINFO_EXTENSION);
+            $check = getimagesize($image['tmp_name']);
+
+            if ($check !== false) {
+                $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+                if (in_array($fileType, $allowedTypes)) {
+                    if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
+                        $response['file'] = "The file " . htmlspecialchars($image_name) . " has been uploaded successfully.";
+                    } else {
+                        $response['file'] = "Sorry, there was an error uploading your file.";
+                    }
+                } else {
+                    $response['file'] = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.";
+                }
+            } else {
+                $response['file'] = "File is not an image.";
+            }
+        } else {
+            $response['file'] = "No file was uploaded.";
+        }
+
         $produit = Produit::create();
         foreach ($this->att_produit as $att) {
             if ($att !== 'id'){
-                $produit->$att = $data->$att;
+                if ($att === 'image') {
+                    $produit->$att = basename($image['name']);
+                } else {
+                    $produit->$att = $data->$att;
+                }
             }
         }
         $produit->save();

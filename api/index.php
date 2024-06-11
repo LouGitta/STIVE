@@ -13,7 +13,18 @@ $method = $_SERVER['REQUEST_METHOD'];
 //     echo $key . " : " . $value . "<br />\r\n";
 // }
 $headers = getallheaders();
-$data = json_decode(file_get_contents('php://input'));
+if (isset($_FILES['image'])){
+    $image = $_FILES['image'];
+}
+
+if (!empty(file_get_contents('php://input'))){
+    $data = json_decode(file_get_contents('php://input'));
+} else if (isset($_POST['data'])) {
+    $data = json_decode($_POST['data']);
+} else {
+    $data = '';
+}
+
 $base_url = "/STIVE/api/";
 $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
@@ -55,7 +66,7 @@ if ($controller) {
             $controller->get($id, $_GET, $data);
             break;
         case 'POST':
-            $controller->post($data, $headers);
+            $controller->post($data, $headers, $image);
             break;
         case 'PATCH':
             $controller->patch($id, $data);
