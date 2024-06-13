@@ -44,7 +44,7 @@
 					<div class="produit">
 						<div class="produit-image">
 							<!-- image du produit -->
-							<img src="https://dummyimage.com/600x400" alt="" />
+							<img class="image" src="https://dummyimage.com/600x400" alt="" />
 						</div>
 						<div class="produit-info">
 							<p class="produit-nom" id="nom"></p>
@@ -170,7 +170,15 @@
           .content.cloneNode(true);
 		
         // afficher les informations dans les cartes //
-        template.querySelector("img").src = product.image || "https://dummyimage.com/300x300";
+		if (product.image) {
+			img = template.querySelector("img")
+			img.src = `/STIVE/front/imageProduit/${product.image}`;
+			img.width = 300;
+			img.height = 300;
+		} else {
+			console.log('no image')
+		}
+
         template.querySelector("#nom").textContent = product.nom;
         template.querySelector("#prix").textContent = `${product.prix}`+' €';
         template.querySelector("#description").textContent = product.description;

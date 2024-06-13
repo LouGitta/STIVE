@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Login</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+		<link rel="stylesheet" href=".\style\style.css" />
+	</head>
+	<body>
+		<header>
+			<h1>STIVE</h1>
+
+			<!-- <nav>
+				<a href="/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
+				
+			</nav> -->
+		</header>
+
+		<main>
+            <div class="breadcrumb">
+				<a class="bread-acceuil" href="http://localhost/STIVE/front/">Accueil</a> / <span class="panier-page">connexion</span>
+			</div>
+            <div class="container">
+                <div class="register--login">
+                    <form method="post">
+                        <label for="mail">Mail:</label>
+                        <input id="mail" name="mail" required="" type="email" />
+                        
+                        <label for="mdp">Mdp:</label>
+                        <div class="input-icon">
+                            <i id="afficherMdp" class="fa fa-eye" onclick="afficherMdp()"></i>
+                            <input id="mdp" name="mdp" required="" type="password" />
+                        </div>
+                        
+                        <input type="submit" onclick="connexion(event)" value="Se connecter" />
+                        <br>
+                        
+                        Pas encore inscrit : <a href="/STIVE/front/register.html">S'inscrire</a>
+                    </form>
+                </div>
+            </div>
+		</main>
+
+		<footer>
+			<nav>
+				<a href="#">Confidentialité</a>
+				<a href="#">Conditions d'utilisation</a>
+			</nav>
+
+			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
+		</footer>
+	</body>
+
+	<script>
+
+        async function connexion(){
+            event.preventDefault();
+
+            const form = event.target.closest('form');
+
+            const formData = new FormData(form);
+
+            const formValues = Object.fromEntries(formData.entries());
+
+            const response = await fetch("http://localhost/STIVE/api/utilisateur/", {
+                method: "POST",
+                body: JSON.stringify(formValues),
+                headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "action-type": "login",
+                "app-type": "website"
+                }
+            })
+
+            const data = await response.json();
+            console.log(data)
+            if (data.status) {
+                window.localStorage.setItem("token", data.token)
+                window.localStorage.setItem("user", JSON.stringify(data.user))
+
+                alert("Connexion réussie");
+                window.location.replace("/STIVE/front/index.html")
+            } else {
+                console.log("Connexion échouée:", data.message);
+            }
+        }
+
+        function afficherMdp() {
+            const passwordInput = document.getElementById('mdp');
+            const passwordIcon = document.getElementById('afficherMdp');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+	</script>
+</html> 

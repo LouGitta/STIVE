@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title>Accueil</title>
 
 		<link rel="stylesheet" href="./style/style.css" />
 	</head>
@@ -13,13 +13,11 @@
 
 			<nav>
 				<!-- si pas d'utilisateur -->
-				<a href="http://localhost/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
-				<a  onclick="force()">HARD</a>
-
+				<a href="/STIVE/front/login.html" class="noUserElement hidden">Connexion</a>
 
 				<!-- si utilisateur -->
-				<a href="http://localhost/STIVE/front/panier" class="userElement hidden">Panier</a>
-				<a href="http://localhost/STIVE/front/commandes" class="userElement hidden">Commandes</a>
+				<a href="/STIVE/front/panier" class="userElement hidden">Panier</a>
+				<a href="/STIVE/front/commandes" class="userElement hidden">Commandes</a>
 				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
 				
 			</nav>
@@ -183,10 +181,14 @@
 					.content.cloneNode(true);
 
 				// href => redirection vers page détail du produit //
-				template.querySelector("a").href = `http://localhost/STIVE/front/produit.html?=${product.id}`;
+				template.querySelector("a").href = `produit.html?=${product.id}`;
 				// dataset pour faciliter le travail avec les filtres //
 				template.querySelector("a").dataset.famille = product.famille;
-
+				if (product.image) {
+					template.querySelector("img").src = `/STIVE/front/imageProduit/${product.image}`
+				} else {
+					console.log('no image')
+				}
 				// afficher les informations dans les cartes //
 				template.querySelector(".nom").innerHTML = product.nom;
 				template.querySelector(".region").innerHTML = product.region;
@@ -237,9 +239,5 @@
             location.reload()
         }
 
-		function force(){
-            window.localStorage.setItem("user", JSON.stringify({"name":"Lou"}))
-            location.reload()
-        }
 	</script>
 </html> 

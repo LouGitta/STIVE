@@ -30,6 +30,8 @@
 				<p>Bonjour <span></span></p>
 			</section>
 
+			<div class="popup--commande hidden"></div>
+
 			<section>
 				<div class="panier--container">
 					<div class="panier--title"> 
@@ -235,6 +237,14 @@
 				quantiteTotal += parseInt(quantite);
 				prixTotal += totalProduit;
 				// afficher les informations dans les cartes //
+				if (produit.produit.image) {
+					img = template.querySelector("img")
+					img.src = `/STIVE/front/imageProduit/${produit.produit.image}`;
+					img.width = 150;
+					img.height = 150;
+				} else {
+					console.log('no image')
+				}
 				template.querySelector(".nom").innerHTML = produit.produit.nom;
 				template.querySelector(".region").innerHTML = produit.produit.region;
 				template.querySelector(".famille").innerHTML = produit.produit.famille;
@@ -295,10 +305,9 @@
 				prixTotal += totalProduit;
 
 				const panier = {
-				'produit': id,
+				'produit_id': id,
 				'quantite': quantite,
-				'prix_unite' : prixUnite,
-				'total_produit' : totalProduit
+				'prix' : prixUnite,
 				};
 				
 				produits.push(panier)
@@ -335,7 +344,8 @@
 				},
 				body: JSON.stringify(data)
 			});
-
+			console.log(response)
+			alert(response)
 			return response;
 		}
 	</script>
