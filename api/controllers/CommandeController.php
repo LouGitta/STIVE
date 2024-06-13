@@ -36,7 +36,7 @@ class CommandeController {
 
 
     function post($data){
-        $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s')), 8, 8);
+        $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s:ms')), 8, 8);
         try {
             $commande = Commande::create();
                 foreach ($this->att_commande as $att) {

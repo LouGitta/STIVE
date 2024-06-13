@@ -7,12 +7,12 @@ require_once __DIR__ . '/controllers/UtilisateurController.php';
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
 $method = $_SERVER['REQUEST_METHOD'];
-// echo $_SERVER['REQUEST_URI'];
-// print_r($_GET);
-// foreach($_GET as $key => $value){
-//     echo $key . " : " . $value . "<br />\r\n";
-// }
+
 $headers = getallheaders();
+
+$image = '';
+$data = '';
+
 if (isset($_FILES['image'])){
     $image = $_FILES['image'];
 }
@@ -21,8 +21,6 @@ if (!empty(file_get_contents('php://input'))){
     $data = json_decode(file_get_contents('php://input'));
 } else if (isset($_POST['data'])) {
     $data = json_decode($_POST['data']);
-} else {
-    $data = '';
 }
 
 $base_url = "/STIVE/api/";
