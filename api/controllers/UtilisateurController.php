@@ -3,10 +3,23 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
+require_once realpath(__DIR__ . '/../vendor/autoload.php');
+
+use Firebase\JWT\JWT;
+$secretKey = parse_ini_file(__DIR__ . '/../../jwtHandler.env')['JWT_SECRET_KEY'] ?? null;
+
+
 
 class UtilisateurController {
     
-    public $att_utilisateur = ['id', 'nom', 'prenom','mdp', 'mail', 'is_client', 'is_admin'];
+    public $att_utilisateur_full = ['id', 'nom', 'prenom','mdp', 'mail', 'is_client', 'is_admin'];
+    public $att_utilisateur_register = ['id', 'nom', 'prenom','mdp', 'mail'];
+    public $secretKey;
+
+    public function __construct() {
+        global $secretKey;
+        $this->secretKey = $secretKey;
+    }
 
     function get($id){
         if ($id) {
@@ -23,7 +36,7 @@ class UtilisateurController {
             $tableau = [];
             foreach ($utilisateurs as $p) {
                 $utilisateurArray = [];
-                foreach ($this->att_utilisateur as $att) {
+                foreach ($this->att_utilisateur_full as $att) {
                     $utilisateurArray[$att] = $p->$att;
                 }
                 $tableau[] = $utilisateurArray;
@@ -34,15 +47,21 @@ class UtilisateurController {
 
 
     function post($data, $headers){
+        $att_utilisateur = [];
+
+        if ($headers['app-type'] === 'website'){
+           $att_utilisateur = $this->att_utilisateur_register;
+        } else {
+           $att_utilisateur = $this->att_utilisateur_full;
+        }
 
         if($headers['action-type'] === 'register') {
             $utilisateur = Utilisateur::create();
-            foreach ($this->att_utilisateur as $att) {
+            foreach ($att_utilisateur as $att) {
                 if ($att !== 'id'){
                     if ($att === 'mdp'){
-                        $mdp = 
-                        $utilisateur->$att = password_hash($data->$att, PASSWORD_DEFAULT);
-                    } else {
+                    $utilisateur->$att = password_hash($data->$att, PASSWORD_DEFAULT);
+                } else {
                         $utilisateur->$att = $data->$att;
                     }
 
@@ -50,7 +69,8 @@ class UtilisateurController {
             }
             $utilisateur->save();
             $tab['id'] = $utilisateur->id;
-            echo json_encode($tab);
+            $response['success'] = $utilisateur->id;
+            echo json_encode($response);
 
         }  else if ($headers['action-type'] === 'login') {
 
@@ -60,18 +80,33 @@ class UtilisateurController {
                 $utilisateur = Utilisateur::where('mail', $mail)->find_one();
                 if ($utilisateur) {
                     if (password_verify($password, $utilisateur->mdp)) {
-                        echo 'connected';
+
+                        $payload = [
+                            'iat' => time(),
+                            'exp' => time() + 36000,
+                            'data' => [
+                                'id' => $utilisateur->id,
+                                'nom' => $utilisateur->nom,
+                                'admin' => $utilisateur->is_admin,
+                                'client' => $utilisateur->is_client
+                            ]
+                        ];
+                        
+                        $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
+                        $connected = array("id" => $utilisateur->id, "name" => $utilisateur->nom, "admin" => $utilisateur->is_admin);
+
+                        echo json_encode(['status' => 'success','token' => $jwt, 'user' => $connected]);
                     }
                 } else {
-                    echo "Pas d'utilisateur trouvé avec cet email.";
+                    echo json_encode(['status' => 'success', 'message' => "Pas d'utilisateur trouvé avec cet email."]);
                 }
                 
             } else {
-                echo 'Pas de data envoyée';
+                echo json_encode(['status' => 'success', 'message' => "Pas de data envoyée"]);
             }
 
         } else {
-            echo 'Header non-authorisé';
+            echo json_encode(['status' => 'success', 'message' => "Header non-authorisé"]);
         }
 
     }
