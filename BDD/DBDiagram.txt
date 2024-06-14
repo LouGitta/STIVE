@@ -38,6 +38,16 @@ Table "commande" {
   }
 }
 
+Table "restock" {
+  "id" int [pk, not null, increment]
+  "reference_commande" varchar(255)
+  "produit_id" int [not null]
+  "date" date [default: NULL]
+  "quantite" int [default: NULL]
+  "prix" float [default: NULL]
+
+}
+
 Table "article" {
   "commande_id" int [not null]
   "produit_id" int [not null]
@@ -55,3 +65,5 @@ Ref "article_ibfk_1":"commande"."id" < "article"."commande_id"
 Ref "article_ibfk_2":"produit"."id" < "article"."produit_id"
 
 Ref "commande_ibfk_1":"utilisateur"."id" < "commande"."utilisateur_id"
+
+Ref "restock_ibfk_1":"produit"."id" < "restock"."produit_id"

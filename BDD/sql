@@ -1,56 +1,12 @@
--- Database: `stive`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `utilisateur`
---
-
 CREATE TABLE `utilisateur` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) DEFAULT NULL,
-  `prenom` varchar(255) DEFAULT NULL,
-  `mdp` varchar(255) DEFAULT NULL,
-  `mail` varchar(255) DEFAULT NULL,
+  `nom` varchar(50) DEFAULT null,
+  `prenom` varchar(50) DEFAULT null,
+  `mdp` varchar(50) DEFAULT null,
+  `mail` varchar(50) DEFAULT null,
   `is_client` tinyint(1) DEFAULT 1,
   `is_admin` tinyint(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `article`
---
-CREATE TABLE `article` (
-  `commande_id` int NOT NULL,
-  `produit_id` int NOT NULL,
-  `prix` float DEFAULT null,
-  `quantite` int DEFAULT null,
-  PRIMARY KEY (`commande_id`, `produit_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `commande`
---
-
-CREATE TABLE `commande` (
-  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `reference_commande` varchar(255),
-  `date_commande` date DEFAULT null,
-  `utilisateur_id` int DEFAULT null,
-  `quantite_commande` int DEFAULT null,
-  `prix_commande` float DEFAULT null
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `produit`
---
+);
 
 CREATE TABLE `produit` (
   `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -66,44 +22,42 @@ CREATE TABLE `produit` (
   `famille` varchar(250) DEFAULT null,
   `region` varchar(250) DEFAULT null,
   `image` varchar(255) DEFAULT null
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
---
--- Dumping data for table `produit`
---
+CREATE TABLE `commande` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `reference_commande` varchar(255),
+  `date_commande` date DEFAULT null,
+  `utilisateur_id` int DEFAULT null,
+  `quantite_commande` int DEFAULT null,
+  `prix_commande` float DEFAULT null
+);
 
-INSERT INTO `produit` (`id`, `nom`, `prix`, `description`, `annee`, `quantite_stock`, `reference`, `fournisseur`, `info`, `maison`, `famille`, `region`, `image`) VALUES
-(1, 'Château Margaux', 300, 'Grand cru classé de Margaux', 2010, 10, 'CM2010', 'Château Margaux', 'Grand cru classé de Margaux 2010', 'Château Margaux', 'Rouge', 'Bordeaux', NULL),
-(2, 'Château Lafite Rothschild', 500, 'Grand cru classé de Pauillac', 2012, 8, 'CL2012', 'Château Lafite Rothschild', 'Grand cru classé de Pauillac 2012', 'Château Lafite Rothschild', 'Rouge', 'Bordeaux', NULL),
-(3, 'Dom Pérignon', 200, 'Champagne millésimé', 2008, 15, 'DP2008', 'Moët & Chandon', 'Champagne millésimé 2008', 'Moët & Chandon', 'Champagne', 'Champagne', NULL),
-(4, 'Puligny-Montrachet', 150, 'Vin blanc de Bourgogne', 2015, 12, 'PM2015', 'Domaine Leflaive', 'Vin blanc de Bourgogne 2015', 'Domaine Leflaive', 'Blanc', 'Bourgogne', NULL),
-(5, 'Château d\'Yquem', 400, 'Grand cru classé de Sauternes', 2011, 7, 'CY2011', 'Château d\'Yquem', 'Grand cru classé de Sauternes 2011', 'Château d\'Yquem', 'Doux', 'Bordeaux', NULL),
-(6, 'Château Haut-Brion', 450, 'Grand cru classé de Pessac-Léognan', 2014, 9, 'CHB2014', 'Château Haut-Brion', 'Grand cru classé de Pessac-Léognan 2014', 'Château Haut-Brion', 'Rouge', 'Bordeaux', NULL),
-(7, 'Cristal', 350, 'Champagne millésimé', 2012, 6, 'C2012', 'Louis Roederer', 'Champagne millésimé 2012', 'Louis Roederer', 'Champagne', 'Champagne', NULL),
-(8, 'Romanée-Conti', 1200, 'Grand cru de Bourgogne', 2016, 3, 'RC2016', 'Domaine de la Romanée-Conti', 'Grand cru de Bourgogne 2016', 'Domaine de la Romanée-Conti', 'Rouge', 'Bourgogne', NULL),
-(9, 'Château Cheval Blanc', 550, 'Grand cru classé de Saint-Émilion', 2013, 5, 'CCB2013', 'Château Cheval Blanc', 'Grand cru classé de Saint-Émilion 2013', 'Château Cheval Blanc', 'Rouge', 'Bordeaux', NULL),
-(10, 'Screaming Eagle', 2500, 'Vin de Californie', 2015, 2, 'SE2015', 'Screaming Eagle', 'Vin de Californie 2015', 'Screaming Eagle', 'Rouge', 'Napa Valley', NULL),
-(11, 'Opus One', 350, 'Vin de Californie', 2016, 4, 'OO2016', 'Opus One Winery', 'Vin de Californie 2016', 'Opus One Winery', 'Rouge', 'Napa Valley', NULL),
-(12, 'Château Mouton Rothschild', 400, 'Grand cru classé de Pauillac', 2014, 8, 'CMR2014', 'Château Mouton Rothschild', 'Grand cru classé de Pauillac 2014', 'Château Mouton Rothschild', 'Rouge', 'Bordeaux', NULL),
-(13, 'Château Palmer', 250, 'Grand cru classé de Margaux', 2013, 6, 'CP2013', 'Château Palmer', 'Grand cru classé de Margaux 2013', 'Château Palmer', 'Rouge', 'Bordeaux', NULL),
-(14, 'Krug', 300, 'Champagne millésimé', 2011, 9, 'K2011', 'Krug', 'Champagne millésimé 2011', 'Krug', 'Champagne', 'Champagne', NULL),
-(15, 'Château Latour', 600, 'Grand cru classé de Pauillac', 2015, 3, 'CLT2015', 'Château Latour', 'Grand cru classé de Pauillac 2015', 'Château Latour', 'Rouge', 'Bordeaux', NULL);
+CREATE TABLE `restock` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `reference_commande` varchar(255),
+  `produit_id` int NOT NULL,
+  `date` date DEFAULT null,
+  `quantite` int DEFAULT null,
+  `prix` float DEFAULT null
+);
 
+CREATE TABLE `article` (
+  `commande_id` int NOT NULL,
+  `produit_id` int NOT NULL,
+  `prix` float DEFAULT null,
+  `quantite` int DEFAULT null,
+  PRIMARY KEY (`commande_id`, `produit_id`)
+);
 
---
--- Constraints
---
+CREATE INDEX `utilisateur_id` ON `commande` (`utilisateur_id`);
 
---
--- Constraints for table `article`
---
+CREATE INDEX `produit_id` ON `article` (`produit_id`);
 
-ALTER TABLE `article`
-  ADD CONSTRAINT `article_ibfk_1` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`),
-  ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+ALTER TABLE `article` ADD CONSTRAINT `article_ibfk_1` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`);
 
---
--- Constraints for table `commande`
---
+ALTER TABLE `article` ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
 
-ALTER TABLE `commande` ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`)
+ALTER TABLE `commande` ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`);
+
+ALTER TABLE `restock` ADD CONSTRAINT `restock_ibfk_1` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
