@@ -22,7 +22,7 @@ class UtilisateurController {
     }
 
     function get($param){
-        if ($param['id']) {
+        if (isset($param['id'])) {
 
             $utilisateur = Utilisateur::find_one($param['id']);
             if ($utilisateur) {

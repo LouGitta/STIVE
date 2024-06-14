@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
+require_once __DIR__ . '/RestockController.php';
 
 class CommandeController {
     
@@ -10,7 +11,7 @@ class CommandeController {
     public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
     function get($param){
-        if ($param['id']) {
+        if (isset($param['id'])) {
 
             $commande = Commande::find_one($param['id']);
             if ($commande) {
@@ -38,6 +39,7 @@ class CommandeController {
     function post($data){
         $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s:ms')), 8, 8);
         try {
+            // Creation de la commande
             $commande = Commande::create();
                 foreach ($this->att_commande as $att) {
                     if ($att !== 'id'){
@@ -53,6 +55,7 @@ class CommandeController {
             $commande->save();
             $tab['id'] = $commande->id;
             
+            // Creation des articles de la commandes
             foreach ($data->produits as $data) {
                 $article = Article::create();
                     foreach ($this->att_article as $att) {
@@ -66,10 +69,11 @@ class CommandeController {
                     }
                 $article->save();
             }
-
-
             $succes = array('status' => 'Validé', 'message' => 'La commande est validée', 'numero' => $reference);
             echo json_encode($succes, JSON_UNESCAPED_UNICODE);
+            
+            // Mise a jour du stock des produits
+            $this->stockUpdate($data);
 
         } catch (Exception $e) {
             $error = array('error' => $e, 'message' => 'La commande a échoué');
@@ -111,4 +115,20 @@ class CommandeController {
         }
     }
         
+    // Modification du stock
+    function stockUpdate($data){
+            $produit = Produit::find_one($data->produit_id);
+            print_r($produit->quantite_stock);
+            $produit->quantite_stock -= $data->quantite;
+            print_r($produit->quantite_stock);
+            $produit->save();
+
+            echo json_encode(['status' => 'success', 'message' => "Modification du stock validee"]);
+
+            if ($produit->quantite_stock <= 30){
+                echo json_encode(['status' => 'warning', 'message' => "Restock en cours"]);
+                $restock = new RestockController();
+                $restock->restock($data);
+            }
+    }
 }

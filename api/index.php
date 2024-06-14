@@ -50,6 +50,9 @@ switch ($url_list[0]) {
     case 'article':
         $controller = new ArticleController();
         break;
+    case 'restock':
+        $controller = new RestockController();
+        break;
     // add case for more page
     default:
         http_response_code(404);

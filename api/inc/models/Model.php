@@ -23,3 +23,9 @@ class Article extends Model{
     public static $_table = "article";
 
 }
+
+class Restock extends Model{
+
+    public static $_table = "restock";
+
+}

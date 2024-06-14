@@ -10,7 +10,7 @@ class ProduitController {
     public $att_produit = ['id', 'nom', 'prix','description', 'annee', 'quantite_stock', 'reference', 'fournisseur', 'info', 'maison', 'famille', 'region', 'image'];
 
     function get($param){
-        if ($param['id']) {
+        if (isset($param['id'])) {
 
             $produit = Produit::find_one($param['id']);
             if ($produit) {
