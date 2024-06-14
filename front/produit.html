@@ -132,7 +132,7 @@
 		async function getProduct() {
 			const id = window.location.search.split('=')[1]
 			// url pour récupérer mon produit //
-			const url = "http://localhost/STIVE/api/produit/"+id;
+			const url = "http://localhost/STIVE/api/produit/?id"+id;
 
 			try {
 				// récupération des données depuis l'api //
