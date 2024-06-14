@@ -3,6 +3,8 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/controllers/ProduitController.php';
 require_once __DIR__ . '/controllers/CommandeController.php';
 require_once __DIR__ . '/controllers/UtilisateurController.php';
+require_once __DIR__ . '/controllers/ArticleController.php';
+
 
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
@@ -28,12 +30,6 @@ $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
 $controller = '';
 
-if (isset($url_list[1]) && is_numeric($url_list[1])) {
-    $id = $url_list[1];
-} else {
-    $id = '';
-}
-
 // Page redirect
 switch ($url_list[0]) {
     case '':
@@ -51,6 +47,9 @@ switch ($url_list[0]) {
     case 'test':
         echo 'test';
         break;
+    case 'article':
+        $controller = new ArticleController();
+        break;
     // add case for more page
     default:
         http_response_code(404);
@@ -61,7 +60,7 @@ switch ($url_list[0]) {
 if ($controller) {
     switch ($method) {
         case 'GET':
-            $controller->get($id, $_GET, $data);
+            $controller->get($_GET, $data);
             break;
         case 'POST':
             $controller->post($data, $headers, $image);

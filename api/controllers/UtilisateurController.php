@@ -21,10 +21,10 @@ class UtilisateurController {
         $this->secretKey = $secretKey;
     }
 
-    function get($id){
-        if ($id) {
+    function get($param){
+        if ($param['id']) {
 
-            $utilisateur = Utilisateur::find_one($id);
+            $utilisateur = Utilisateur::find_one($param['id']);
             if ($utilisateur) {
                 echo json_encode($utilisateur->as_array());
             } else {
@@ -98,15 +98,15 @@ class UtilisateurController {
                         echo json_encode(['status' => 'success','token' => $jwt, 'user' => $connected]);
                     }
                 } else {
-                    echo json_encode(['status' => 'success', 'message' => "Pas d'utilisateur trouvé avec cet email."]);
+                    echo json_encode(['status' => 'error', 'message' => "Pas d'utilisateur trouvé avec cet email."]);
                 }
                 
             } else {
-                echo json_encode(['status' => 'success', 'message' => "Pas de data envoyée"]);
+                echo json_encode(['status' => 'error', 'message' => "Pas de data envoyée"]);
             }
 
         } else {
-            echo json_encode(['status' => 'success', 'message' => "Header non-authorisé"]);
+            echo json_encode(['status' => 'error', 'message' => "Header non-authorisé"]);
         }
 
     }

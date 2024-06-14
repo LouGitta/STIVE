@@ -9,10 +9,10 @@ class CommandeController {
     public $att_commande = ['id', 'reference_commande', 'date_commande', 'utilisateur_id', 'quantite_commande', 'prix_commande'];
     public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
-    function get($id){
-        if ($id) {
+    function get($param){
+        if ($param['id']) {
 
-            $commande = Commande::find_one($id);
+            $commande = Commande::find_one($param['id']);
             if ($commande) {
                 echo json_encode($commande->as_array());
             } else {

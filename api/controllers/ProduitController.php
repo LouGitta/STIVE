@@ -9,10 +9,10 @@ class ProduitController {
     
     public $att_produit = ['id', 'nom', 'prix','description', 'annee', 'quantite_stock', 'reference', 'fournisseur', 'info', 'maison', 'famille', 'region', 'image'];
 
-    function get($id, $param){
-        if ($id) {
+    function get($param){
+        if ($param['id']) {
 
-            $produit = Produit::find_one($id);
+            $produit = Produit::find_one($param['id']);
             if ($produit) {
                 echo json_encode($produit->as_array());
             } else {
@@ -28,7 +28,6 @@ class ProduitController {
                     foreach ($this->att_produit as $att) {
                         $produitArray[$att] = $p->$att;
                     }
-                    // print_r($produitArray);
                     $tableau[] = $produitArray;
                 }
             }
