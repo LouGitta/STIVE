@@ -61,3 +61,23 @@ ALTER TABLE `article` ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`produit_id`)
 ALTER TABLE `commande` ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`);
 
 ALTER TABLE `restock` ADD CONSTRAINT `restock_ibfk_1` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+
+--Ajout de data par défaut dans la base de données :
+
+INSERT INTO `produit` (`id`, `nom`, `prix`, `description`, `annee`, `quantite_stock`, `reference`, `fournisseur`, `info`, `maison`, `famille`, `region`, `image`) VALUES
+(1, 'Château Margaux', 300, 'Grand cru classé de Margaux', 2010, 10, 'CM2010', 'Château Margaux', 'Grand cru classé de Margaux 2010', 'Château Margaux', 'Rouge', 'Bordeaux', NULL),
+(2, 'Château Lafite Rothschild', 500, 'Grand cru classé de Pauillac', 2012, 8, 'CL2012', 'Château Lafite Rothschild', 'Grand cru classé de Pauillac 2012', 'Château Lafite Rothschild', 'Rouge', 'Bordeaux', NULL),
+(3, 'Dom Pérignon', 200, 'Champagne millésimé', 2008, 15, 'DP2008', 'Moët & Chandon', 'Champagne millésimé 2008', 'Moët & Chandon', 'Champagne', 'Champagne', NULL),
+(4, 'Puligny-Montrachet', 150, 'Vin blanc de Bourgogne', 2015, 12, 'PM2015', 'Domaine Leflaive', 'Vin blanc de Bourgogne 2015', 'Domaine Leflaive', 'Blanc', 'Bourgogne', NULL),
+(5, 'Château d\'Yquem', 400, 'Grand cru classé de Sauternes', 2011, 7, 'CY2011', 'Château d\'Yquem', 'Grand cru classé de Sauternes 2011', 'Château d\'Yquem', 'Doux', 'Bordeaux', NULL),
+(6, 'Château Haut-Brion', 450, 'Grand cru classé de Pessac-Léognan', 2014, 9, 'CHB2014', 'Château Haut-Brion', 'Grand cru classé de Pessac-Léognan 2014', 'Château Haut-Brion', 'Rouge', 'Bordeaux', NULL),
+(7, 'Cristal', 350, 'Champagne millésimé', 2012, 6, 'C2012', 'Louis Roederer', 'Champagne millésimé 2012', 'Louis Roederer', 'Champagne', 'Champagne', NULL),
+(8, 'Romanée-Conti', 1200, 'Grand cru de Bourgogne', 2016, 3, 'RC2016', 'Domaine de la Romanée-Conti', 'Grand cru de Bourgogne 2016', 'Domaine de la Romanée-Conti', 'Rouge', 'Bourgogne', NULL),
+(9, 'Château Cheval Blanc', 550, 'Grand cru classé de Saint-Émilion', 2013, 5, 'CCB2013', 'Château Cheval Blanc', 'Grand cru classé de Saint-Émilion 2013', 'Château Cheval Blanc', 'Rouge', 'Bordeaux', NULL),
+(10, 'Screaming Eagle', 2500, 'Vin de Californie', 2015, 2, 'SE2015', 'Screaming Eagle', 'Vin de Californie 2015', 'Screaming Eagle', 'Rouge', 'Napa Valley', NULL),
+(11, 'Opus One', 350, 'Vin de Californie', 2016, 4, 'OO2016', 'Opus One Winery', 'Vin de Californie 2016', 'Opus One Winery', 'Rouge', 'Napa Valley', NULL),
+(12, 'Château Mouton Rothschild', 400, 'Grand cru classé de Pauillac', 2014, 8, 'CMR2014', 'Château Mouton Rothschild', 'Grand cru classé de Pauillac 2014', 'Château Mouton Rothschild', 'Rouge', 'Bordeaux', NULL),
+(13, 'Château Palmer', 250, 'Grand cru classé de Margaux', 2013, 6, 'CP2013', 'Château Palmer', 'Grand cru classé de Margaux 2013', 'Château Palmer', 'Rouge', 'Bordeaux', NULL),
+(14, 'Krug', 300, 'Champagne millésimé', 2011, 9, 'K2011', 'Krug', 'Champagne millésimé 2011', 'Krug', 'Champagne', 'Champagne', NULL),
+(15, 'Château Latour', 600, 'Grand cru classé de Pauillac', 2015, 3, 'CLT2015', 'Château Latour', 'Grand cru classé de Pauillac 2015', 'Château Latour', 'Rouge', 'Bordeaux', NULL);
