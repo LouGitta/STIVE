@@ -398,10 +398,79 @@ input[type=text], textarea {
     box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25); /* Custom focus outline */
 }
 
-/* .btn {
-	border: 2px solid #17d42a;
-	background-color: #17d42a;
-	border-radius: 4px;
-	width: 80%;
-	height: 90%;
+/* Login Register Style*/
+
+/* .register--login {
+	border: 1px solid black;
+	margin: 50%;
+
 } */
+
+.container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* Style the login form */
+.register--login {
+	width: 300px;
+	padding: 20px;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	background-color: #f9f9f9;
+}
+
+/* Style the form inputs */
+.register--login input[type="text"],
+.register--login input[type="email"],
+.register--login input[type="password"] {
+	width: 100%;
+	padding: 10px;
+	margin: 5px 0;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-sizing: border-box; /* Ensure padding and border are included in width */
+}
+
+/* Style the login button */
+.register--login input[type="submit"] {
+	width: 100%;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 2px solid #4CAF50;
+	border-radius: 5px;
+	background-color: #4CAF50;
+	color: white;
+	cursor: pointer;
+}
+
+input[type="submit"]:hover {
+	border: 2px solid #4CAF50;
+	background-color: white;
+	color: #4CAF50;
+}
+
+.register--login a {
+	text-decoration: none;
+	color: #007bff;
+}
+
+.input-icon {
+	position: relative;
+}
+
+.input-icon input {
+	padding-right: 30px;
+}
+
+.input-icon .fa {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #aaa;
+	cursor: pointer;
+}
