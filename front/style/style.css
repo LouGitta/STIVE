@@ -1,0 +1,407 @@
+* {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header,
+footer {
+	background-color: #333;
+	color: white;
+	text-align: center;
+	padding: 1em 0;
+}
+
+footer {
+	margin-top: auto;
+}
+
+main {
+	padding: 40px;
+}
+
+h1 {
+	margin-bottom: 12px;
+}
+
+nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+}
+
+nav a {
+	color: #fff;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.user--container p {
+	font-size: 22px;
+}
+
+h2 {
+	font-size: 32px;
+	margin-bottom: 20px;
+}
+
+h3 {
+	font-size: 28px;
+	margin-bottom: 12px;
+}
+
+section {
+	margin-bottom: 40px;
+}
+
+.btn {
+	border: 2px solid #17d42a;
+	background-color: #17d42a;
+	border-radius: 4px;
+	width: 80%;
+	height: 90%;
+}
+
+.btn:hover {
+	background-color: white;
+}
+
+.filter {
+	width: 120px;
+	height: 40px;
+	background: #fff;
+	border: 2px solid #333;
+	border-radius: 4px;
+	font-size: 16px;
+}
+
+button.activated {
+	background: green;
+	color: #fff;
+}
+
+.filters--type--container {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.card--container {
+	display: block;
+	width: 200px;
+	height: 300px;
+	padding: 8px;
+	border: 1px solid #333;
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.card--wrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.card--image {
+	width: 100%;
+	height: 60%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	margin-bottom: 12px;
+}
+
+.card--image img {
+	height: 100%;
+	width: auto;
+	object-fit: contain;
+}
+
+.cards--container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+	align-items: start;
+	justify-items: center;
+}
+
+.card--content {
+	width: 100%;
+}
+
+.card--content h3 {
+	font-size: 16px;
+	color: #333;
+}
+
+
+/* Produit detail styles */
+.breadcrumb, .bread-acceuil{
+	color :gray;
+	margin-bottom: 20px;
+}
+
+.bread-acceuil {
+	color: black;
+}
+
+.produit {
+	display: flex;
+	height: 300px;
+}
+
+.produit-info {
+	display: flex;
+    flex-direction: column;
+}
+
+.produit-nom {
+	margin : 20px;
+	font-size: 30px;
+	margin-bottom: 20px;
+}
+
+.produit-prix {
+	margin : 20px;
+	font-size: 30px;
+	margin-bottom: 20px;
+}
+
+.produit-description {
+	margin : 20px;
+	font-size: 12;
+}
+
+.panier {
+	margin : 20px;
+	margin-top: auto;
+	background-color: #17d42a;
+	border-radius: 4px;
+	width: 100%;
+	height: 40px;
+
+}
+
+.produit-quantite {
+	text-align: center;
+	/* margin: 2px; */
+	width: 15%;
+	border-right: none;
+	border-top:    2px solid #17d42a;
+	border-bottom: 2px solid #17d42a;
+	border-left:   2px solid #17d42a;
+	border-radius: 4px 0px 0px 4px;
+	height: 90%;
+}
+
+/* Panier detail */
+.panier--container {
+	margin: 20px;
+}
+
+.panier--title {
+	margin: 10px 0 10px 0;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: #e5e5e5;
+	display: flex;
+	align-items: center;
+	/* justify-content: center; */
+}
+
+.panier--recapitulatif {
+	display: flex;
+	justify-content: space-between;
+	display: flex;
+}
+
+.image--panier {
+	max-width: 150px;
+	max-height: 150px;
+	margin-right: 5px;
+	border:0.5px solid black;
+}
+
+.produitPanier {
+	display: flex;
+	margin: 5px;
+}
+
+.produit--panier {
+	width: 60%;
+}
+
+.quantite--total--recapitulatif, .prix--total--recapitulatif {
+	height: 50%;
+	display: flex;
+	justify-content: space-around;
+}
+	
+.quantite--total--recapitulatif {
+	border-bottom: 1px solid grey;
+	color: grey;
+	padding-bottom: 10px;
+}
+
+.recapitulatif--confirmer--panier {
+	display: flex;
+	flex-direction: column;
+	width: 30%;
+}
+			
+.recapitulatif {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid black;
+	border-radius: 12px;
+	padding: 10px;
+	margin : 10px;
+}
+
+.info--panier{
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	justify-content: space-around;
+	margin-top: 5px;
+}
+
+.confirmer--panier {
+	display: flex;
+	width: 90%;
+	/* border: none;
+	border-radius: 4px;
+	background-color: #17d42a; */
+	height: 30px;
+	align-items: center;
+	justify-content: center;
+	margin-left: auto;
+	margin-right: auto;
+
+}
+
+.btn--confirmer--panier {
+	border: 2px solid #17d42a;
+	background-color: #17d42a;
+	border-radius: 4px;
+	width: 95%;
+	height: 90%;
+}
+
+
+/* Livraison */
+.livraison--emptybox {
+	display: flex;
+	justify-content: space-between;
+}
+
+.emptybox{
+	width: 40%;
+	/* border: 1px solid black; */
+}
+
+.panier--livraison {
+	margin: 5px;
+	width: 100%;
+}
+
+.form--livraison {
+	display: flex;
+	flex-direction: column;
+	border: #e5e5e5;
+}
+
+.flex-space {
+	display: flex;
+	justify-content: space-between;
+}
+
+#adresse, #precision{
+	width: 100%;
+}
+
+#nom, #prenom, #code, #ville, #telephone, #pays {
+	width:49.5%;
+
+}
+
+input[type=text], textarea {
+	width: 100%;
+	padding: 12px 20px;
+	margin: 8px 0;
+	border-radius: 4px;
+	box-sizing: border-box;
+	border: 3px solid #ccc;
+	-webkit-transition: 0.5s;
+	transition: 0.5s;
+	outline: none;
+  }
+  
+  input[type=text]:focus, textarea:focus {
+	border: 3px solid #555;
+  }
+
+.livraison{
+	width: 60%;
+	height: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	
+}
+
+/*  Paiement*/
+
+.paiement--btn {
+	margin: 5px;
+    width: 200px; /* Increased the width for better visual impact */
+    height: 50px; /* Adjusted height for better proportions */
+    background-color: #003087; /* Base color */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 18px; /* Increased font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+    display: flex; /* Center the content */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.paiement--btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.paiement--btn:active {
+    background-color: #002060; /* Even darker shade on click */
+    transform: translateY(0); /* Reset lift on click */
+}
+
+.paiement--btn:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25); /* Custom focus outline */
+}
+
+/* .btn {
+	border: 2px solid #17d42a;
+	background-color: #17d42a;
+	border-radius: 4px;
+	width: 80%;
+	height: 90%;
+} */

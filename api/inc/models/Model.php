@@ -17,3 +17,15 @@ class Commande extends Model{
     public static $_table = "commande";
 
 }
+
+class Article extends Model{
+
+    public static $_table = "article";
+
+}
+
+class Restock extends Model{
+
+    public static $_table = "restock";
+
+}

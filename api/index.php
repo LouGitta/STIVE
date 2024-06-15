@@ -3,27 +3,32 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/controllers/ProduitController.php';
 require_once __DIR__ . '/controllers/CommandeController.php';
 require_once __DIR__ . '/controllers/UtilisateurController.php';
+require_once __DIR__ . '/controllers/ArticleController.php';
+
 
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
 $method = $_SERVER['REQUEST_METHOD'];
-// echo $_SERVER['REQUEST_URI'];
-// print_r($_GET);
-// foreach($_GET as $key => $value){
-//     echo $key . " : " . $value . "<br />\r\n";
-// }
 
-$data = json_decode(file_get_contents('php://input'));
+$headers = getallheaders();
+
+$image = '';
+$data = '';
+
+if (isset($_FILES['image'])){
+    $image = $_FILES['image'];
+}
+
+if (!empty(file_get_contents('php://input'))){
+    $data = json_decode(file_get_contents('php://input'));
+} else if (isset($_POST['data'])) {
+    $data = json_decode($_POST['data']);
+}
+
 $base_url = "/STIVE/api/";
 $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
 $controller = '';
-
-if (isset($url_list[1]) && is_numeric($url_list[1])) {
-    $id = $url_list[1];
-} else {
-    $id = '';
-}
 
 // Page redirect
 switch ($url_list[0]) {
@@ -42,6 +47,12 @@ switch ($url_list[0]) {
     case 'test':
         echo 'test';
         break;
+    case 'article':
+        $controller = new ArticleController();
+        break;
+    case 'restock':
+        $controller = new RestockController();
+        break;
     // add case for more page
     default:
         http_response_code(404);
@@ -52,10 +63,10 @@ switch ($url_list[0]) {
 if ($controller) {
     switch ($method) {
         case 'GET':
-            $controller->get($id, $_GET);
+            $controller->get($_GET, $data);
             break;
         case 'POST':
-            $controller->post($data);
+            $controller->post($data, $headers, $image);
             break;
         case 'PATCH':
             $controller->patch($id, $data);

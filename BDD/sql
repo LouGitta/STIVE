@@ -1,83 +1,34 @@
-Table pays as PAYS {
-  id int [pk]
-  pays varchar(50)
-}
-
-Table fournisseur as FOURNISSEUR {
-  id int [pk]
-  nom varchar(50)
-}
-
-Table maison as MAISON {
-  id int [pk]
-  maison varchar(50)
-}
-
-Table famille as FAMILLE {
-  id int [pk]
-  famille varchar(50)
-}
-
-Table region as REGION {
-  id int [pk]
-  region varchar(50)
-  pays_id int [ref: > PAYS.id]
-}
-
-Table utilisateur as UTILISATEUR {
-  id int [pk]
-  nom varchar(50)
-  prenom varchar(50)
-  mdp varchar(50)
-  mail varchar(50)
-  is_client boolean
-}
-
-Table article as ARTICLE {
-  
-  commande_id int [pk, ref: > COMMANDE.id]
-  produit_id int [pk, ref: > PRODUIT.id]
-
-
-}
-Table commande as COMMANDE {
-  id int [pk]
-  date_commande date
-  utilisateur_id int [ref: > UTILISATEUR.id]
-  produit_id int [ref: > PRODUIT.id]
-  quantite_commande int
-  prix_commande int
-}
-
-Table produit as PRODUIT {
-  id int [pk]
-  nom varchar(50)
-  prix float
-  description varchar(255)
-  annee year
-  quantite_stock int
-  reference varchar(50)
-  fournisseur_id int [ref: > FOURNISSEUR.id]
-  info_id int
-  maison_id int [ref: > MAISON.id]
-  famille_id int [ref: > FAMILLE.id]
-  region_id int [ref: > REGION.id]
-}
-
--- Database: `CubeDB`
+-- Database: `stive`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `utilisateur`
+--
+
+CREATE TABLE `utilisateur` (
+  `id`  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nom` varchar(255) DEFAULT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `mdp` varchar(255) DEFAULT NULL,
+  `mail` varchar(255) DEFAULT NULL,
+  `is_client` tinyint(1) DEFAULT 1,
+  `is_admin` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `article`
 --
-
 CREATE TABLE `article` (
-  `commande_id` int(11) NOT NULL,
-  `produit_id` int(11) NOT NULL,
-  `prix` float DEFAULT NULL,
-  `quantite` int(11) DEFAULT NULL
+  `commande_id` int NOT NULL,
+  `produit_id` int NOT NULL,
+  `prix` float DEFAULT null,
+  `quantite` int DEFAULT null,
+  PRIMARY KEY (`commande_id`, `produit_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -87,12 +38,12 @@ CREATE TABLE `article` (
 --
 
 CREATE TABLE `commande` (
-  `id` int(11) NOT NULL,
-  `date_commande` date DEFAULT NULL,
-  `utilisateur_id` int(11) DEFAULT NULL,
-  `produit_id` int(11) DEFAULT NULL,
-  `quantite_commande` int(11) DEFAULT NULL,
-  `prix_commande` int(11) DEFAULT NULL
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `reference_commande` varchar(255),
+  `date_commande` date DEFAULT null,
+  `utilisateur_id` int DEFAULT null,
+  `quantite_commande` int DEFAULT null,
+  `prix_commande` float DEFAULT null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -102,19 +53,19 @@ CREATE TABLE `commande` (
 --
 
 CREATE TABLE `produit` (
-  `id` int(11) NOT NULL,
-  `nom` varchar(255) DEFAULT NULL,
-  `prix` float DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `annee` year(4) DEFAULT NULL,
-  `quantite_stock` int(11) DEFAULT NULL,
-  `reference` varchar(255) DEFAULT NULL,
-  `fournisseur` varchar(255) DEFAULT NULL,
-  `info` varchar(250) DEFAULT NULL,
-  `maison` varchar(250) DEFAULT NULL,
-  `famille` varchar(250) DEFAULT NULL,
-  `region` varchar(250) DEFAULT NULL,
-  `image` varchar(255) DEFAULT NULL
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `nom` varchar(50) DEFAULT null,
+  `prix` float DEFAULT null,
+  `description` varchar(255) DEFAULT null,
+  `annee` year DEFAULT null,
+  `quantite_stock` int DEFAULT null,
+  `reference` varchar(255) DEFAULT null,
+  `fournisseur` varchar(255) DEFAULT null,
+  `info` varchar(250) DEFAULT null,
+  `maison` varchar(250) DEFAULT null,
+  `famille` varchar(250) DEFAULT null,
+  `region` varchar(250) DEFAULT null,
+  `image` varchar(255) DEFAULT null
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -138,81 +89,15 @@ INSERT INTO `produit` (`id`, `nom`, `prix`, `description`, `annee`, `quantite_st
 (14, 'Krug', 300, 'Champagne millésimé', 2011, 9, 'K2011', 'Krug', 'Champagne millésimé 2011', 'Krug', 'Champagne', 'Champagne', NULL),
 (15, 'Château Latour', 600, 'Grand cru classé de Pauillac', 2015, 3, 'CLT2015', 'Château Latour', 'Grand cru classé de Pauillac 2015', 'Château Latour', 'Rouge', 'Bordeaux', NULL);
 
--- --------------------------------------------------------
 
 --
--- Table structure for table `utilisateur`
---
-
-CREATE TABLE `utilisateur` (
-  `id` int(11) NOT NULL,
-  `nom` varchar(255) DEFAULT NULL,
-  `prenom` varchar(255) DEFAULT NULL,
-  `mdp` varchar(255) DEFAULT NULL,
-  `mail` varchar(255) DEFAULT NULL,
-  `is_client` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `article`
---
-ALTER TABLE `article`
-  ADD PRIMARY KEY (`commande_id`,`produit_id`),
-  ADD KEY `produit_id` (`produit_id`);
-
---
--- Indexes for table `commande`
---
-ALTER TABLE `commande`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `utilisateur_id` (`utilisateur_id`),
-  ADD KEY `produit_id` (`produit_id`);
-
---
--- Indexes for table `produit`
---
-ALTER TABLE `produit`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `commande`
---
-ALTER TABLE `commande`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `produit`
---
-ALTER TABLE `produit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
-
---
--- AUTO_INCREMENT for table `utilisateur`
---
-ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
+-- Constraints
 --
 
 --
 -- Constraints for table `article`
 --
+
 ALTER TABLE `article`
   ADD CONSTRAINT `article_ibfk_1` FOREIGN KEY (`commande_id`) REFERENCES `commande` (`id`),
   ADD CONSTRAINT `article_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
@@ -220,6 +105,5 @@ ALTER TABLE `article`
 --
 -- Constraints for table `commande`
 --
-ALTER TABLE `commande`
-  ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`),
-  ADD CONSTRAINT `commande_ibfk_2` FOREIGN KEY (`produit_id`) REFERENCES `produit` (`id`);
+
+ALTER TABLE `commande` ADD CONSTRAINT `commande_ibfk_1` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`)
