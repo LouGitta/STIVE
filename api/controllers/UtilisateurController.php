@@ -86,7 +86,7 @@ class UtilisateurController {
                             'exp' => time() + 36000,
                             'data' => [
                                 'id' => $utilisateur->id,
-                                'nom' => $utilisateur->nom,
+                                'prenom' => $utilisateur->prenom,
                                 'admin' => $utilisateur->is_admin,
                                 'client' => $utilisateur->is_client
                             ]
@@ -95,7 +95,7 @@ class UtilisateurController {
                         $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
                         $connected = array("id" => $utilisateur->id, "name" => $utilisateur->nom, "admin" => $utilisateur->is_admin);
 
-                        echo json_encode(['status' => 'success','token' => $jwt, 'user' => $connected]);
+                        echo json_encode(['status' => 'success','token' => $jwt]);
                     }
                 } else {
                     echo json_encode(['status' => 'error', 'message' => "Pas d'utilisateur trouvé avec cet email."]);

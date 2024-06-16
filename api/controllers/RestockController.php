@@ -65,7 +65,7 @@ class RestockController {
         // print_r($produit->quantite_stock);
 
         $produit->save();
-        echo json_encode(['status' => 'success', 'message' => "Restock valide"]);
+        // echo json_encode(['status' => 'success', 'message' => "Restock valide"]);
 
     }
 }
