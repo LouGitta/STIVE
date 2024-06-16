@@ -10,11 +10,6 @@
 	<body>
 		<header>
 			<h1>STIVE</h1>
-
-			<!-- <nav>
-				<a href="/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
-				
-			</nav> -->
 		</header>
 
 		<main>
@@ -58,65 +53,4 @@
 			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
 		</footer>
 	</body>
-
-	<script>
-        async function inscription(event) {
-            event.preventDefault();
-
-            const form = event.target.closest('form');
-            
-            const formData = new FormData(form);
-            
-            const formValues = Object.fromEntries(formData.entries());
-            
-            
-            const response = await fetch("http://localhost/STIVE/api/utilisateur/", {
-                method: "POST",
-                body: JSON.stringify(formValues),
-                headers: {
-                "Content-type": "application/json; charset=UTF-8",
-                "action-type": "register",
-                "app-type": "website"
-                }
-            })
-            
-            const data = await response.json();
-
-            if (data.success) {
-                alert("Registration successful");
-                window.location.replace("/STIVE/front/login.html")
-            } else {
-                console.log("Registration failed:", data.message);
-            }
-
-        }
-
-        function afficherMdp() {
-            const passwordInput = document.getElementById('mdp');
-            const passwordIcon = document.getElementById('afficherMdp');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.classList.remove('fa-eye');
-                passwordIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.classList.remove('fa-eye-slash');
-                passwordIcon.classList.add('fa-eye');
-            }
-        }
-
-        function afficherMdpConfirmer() {
-            const passwordInput = document.getElementById('mdp-confirmer');
-            const passwordIcon = document.getElementById('afficherMdpConfirmer');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                passwordIcon.classList.remove('fa-eye');
-                passwordIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                passwordIcon.classList.remove('fa-eye-slash');
-                passwordIcon.classList.add('fa-eye');
-            }
-        }
-	</script>
 </html> 
