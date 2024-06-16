@@ -150,6 +150,14 @@ button.activated {
 
 
 /* Produit detail styles */
+.help-block {
+    display: block;
+    margin-top: 8px; /* Espace au-dessus de l'élément */
+    font-size: 14px; /* Taille de la police */
+    color: #999; /* Couleur du texte d'aide */
+    font-style: italic; /* Style de police italique */
+}
+
 .breadcrumb, .bread-acceuil{
 	color :gray;
 	margin-bottom: 20px;
@@ -473,4 +481,48 @@ input[type="submit"]:hover {
 	transform: translateY(-50%);
 	color: #aaa;
 	cursor: pointer;
+}
+
+/* Style pour les commandes */
+.card--container--commande {
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 0px 8px 0px 8px;
+	border: 1px solid #333;
+	border-radius: 12px;
+	overflow: hidden;
+	justify-content: space-between;
+}
+
+.card--wrapper--commande {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.cards--container--commande {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 20px;
+	align-items: center;
+	justify-items: center;
+}
+
+.card--content--commande {
+	width: 100%;
+}
+
+.card--content-row--commande {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card--content--commande h3 {
+	font-size: 16px;
+	color: #333;
 }

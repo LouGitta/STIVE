@@ -6,19 +6,22 @@
 		<title>Accueil</title>
 
 		<link rel="stylesheet" href="./style/style.css" />
+		<script src="./script/main.js" defer></script>
+
 	</head>
 	<body>
 		<header>
 			<h1>STIVE</h1>
 
 			<nav>
+				<a href="/STIVE/front/" >Accueil</a>
+				<a href="/STIVE/front/panier" >Panier</a>
 				<!-- si pas d'utilisateur -->
 				<a href="/STIVE/front/login.html" class="noUserElement hidden">Connexion</a>
 
 				<!-- si utilisateur -->
-				<a href="/STIVE/front/panier" class="userElement hidden">Panier</a>
-				<a href="/STIVE/front/commandes" class="userElement hidden">Commandes</a>
-				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
+				<a href="/STIVE/front/commande" class="userElement hidden">Commandes</a>
+				<a  href="" class="userElement hidden" onclick="disconnect()">Déconnexion</a>
 				
 			</nav>
 		</header>
@@ -97,7 +100,7 @@
 			}
 
 			// obtenir les données depuis des produits //
-			const products = await getProducts();
+			const products = await getProduits();
 
 			// si erreur afficher un message //
 			if (!products) {
@@ -105,139 +108,10 @@
 			}
 			// créer et ajouter les cartes au DOM //
 			else {
-				displayProductsElements(products);
+				afficherProduitsElements(products);
 				// mise en place des filtres //
 				initFilters();
 			}
 		}
-
-		// vérifier si utilisateur connecté //
-		function getUser() {
-			if (!window.localStorage.getItem("user")) {
-				return null;
-			} else {
-				return JSON.parse(window.localStorage.getItem("user"));
-			}
-		}
-
-		// si non connecté //
-		function displayNoUserElements() {
-			const noUserElements = document.querySelectorAll(".noUserElement");
-			for (let element of noUserElements) {
-				element.classList.toggle("hidden");
-			}
-		}
-
-		// si connecté //
-		function displayUserElements() {
-			const userElements = document.querySelectorAll(".userElement");
-			for (let element of userElements) {
-				element.classList.toggle("hidden");
-			}
-
-			const user = getUser();
-			const userNameElement = document.querySelector(".user--container span");
-			userNameElement.innerHTML = user.name;
-		}
-
-		// obtenir les données depuis des produits //
-		async function getProducts() {
-			// url pour récupérer ma liste d'articles //
-			const url = "http://localhost/STIVE/api/produit";
-
-			try {
-				// récupération des données depuis l'api //
-				const response = await fetch(url);
-				const data = await response.json();
-				console.table(data);
-
-				return data;
-			} catch (error) {
-				// si erreur, on affiche le message //
-				console.log(error.message);
-			}
-		}
-
-		// si erreur afficher un message //
-		function displayNoProductsElements() {
-			const message = "Il n'y a pas d'article à présenter !";
-			const errorMessageElement = document.querySelector(
-				".errorMessageElement"
-			);
-
-			errorMessageElement.innerHTML = message;
-			errorMessageElement.classList.toggle("hidden");
-		}
-
-		// affichage des produits //
-		function displayProductsElements(products) {
-			// l'élément qui reçoit les cartes //
-			const container = document.querySelector(".cards--container");
-
-			for (let product of products) {
-				// le template pour créer les cartes plus simplement //
-				const template = document
-					.querySelector("#templateCard")
-					.content.cloneNode(true);
-
-				// href => redirection vers page détail du produit //
-				template.querySelector("a").href = `produit.html?=${product.id}`;
-				// dataset pour faciliter le travail avec les filtres //
-				template.querySelector("a").dataset.famille = product.famille;
-				if (product.image) {
-					template.querySelector("img").src = `/STIVE/front/imageProduit/${product.image}`
-				} else {
-					console.log('no image')
-				}
-				// afficher les informations dans les cartes //
-				template.querySelector(".nom").innerHTML = product.nom;
-				template.querySelector(".region").innerHTML = product.region;
-				template.querySelector(".famille").innerHTML = product.famille;
-
-				// ne pas oublier d'insérer les cartes dans leur container //
-				container.appendChild(template);
-			}
-		}
-
-		// mise en place des filtres //
-		function initFilters() {
-			const filters = document.querySelectorAll(".filter");
-
-			for (let filter of filters) {
-				filter.addEventListener("click", handleFilterClick);
-			}
-		}
-
-		// @clik sur un filtre //
-		function handleFilterClick(event) {
-			const filterType = event.currentTarget.value;
-
-			const cards = document.querySelectorAll(".card--container");
-			for (let card of cards) {
-				if (card.dataset["famille"] === filterType) {
-					showCard(card);
-				} else {
-					hideCard(card);
-				}
-			}
-		}
-
-		function showCard(card) {
-			if (card.classList.contains("hidden")) {
-				card.classList.toggle("hidden");
-			}
-		}
-
-		function hideCard(card) {
-			if (!card.classList.contains("hidden")) {
-				card.classList.toggle("hidden");
-			}
-		}
-
-		function disconnect(){
-            window.localStorage.removeItem("user")
-            location.reload()
-        }
-
 	</script>
 </html> 

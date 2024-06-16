@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Commandes</title>
+
+		<link rel="stylesheet" href="./style/style.css" />
+		<script src="./script/main.js" defer></script>
+
+	</head>
+	<body>
+		<header>
+			<h1>STIVE</h1>
+
+			<nav>
+				<!-- si pas d'utilisateur -->
+				<a href="/STIVE/front/" class="noUserElement">Accueil</a>
+				<a href="/STIVE/front/login.html" class="noUserElement hidden">Connexion</a>
+
+				<!-- si utilisateur -->
+				<a href="/STIVE/front/panier" class="userElement hidden">Panier</a>
+				<a href="" class="userElement hidden" onclick="disconnect()">Déconnexion</a>
+				
+			</nav>
+		</header>
+
+		<main>
+            <div class="breadcrumb">
+				<a class="bread-acceuil" href="/STIVE/front/">Accueil</a> / <span class="panier-page">commande</span>
+			</div>
+			<!-- si utilisateur -->
+			<section class="user--container userElement hidden">
+				<p>Bonjour <span></span></p>
+			</section>
+
+			<section>
+				<h2>Commandes</h2>
+
+				<!-- reçoit les cartes crées à partir de la liste des produits récupérés -->
+				<div class="cards--container--commande">
+					<p class="errorMessageElement hidden"></p>
+				</div>
+
+				<!-- modèle de cartes -->
+				<template id="templateCard">
+					<!-- lien pour atteindre lapage "détail-produit" -->
+					<a class="card--container--commande">
+						<div class="card--wrapper--commande">
+                            <div class="card--content--commande">
+                                <div class="card--content-row--commande">
+                                    <h3>Référence :</h3>
+                                    <h3 class="reference_commande"></h3>
+                                </div>
+                                <!-- Ligne pour la quantité -->
+                                <div class="card--content-row--commande">
+                                    <h3>Nombre de produit :</h3>
+                                    <h3 class="quantite_commande"></h3>
+                                </div>
+                                <!-- Ligne pour le prix -->
+                                <div class="card--content-row--commande">
+                                    <h3>Prix total :</h3>
+                                    <h3 class="prix_commande"></h3>
+                                </div>
+                            </div>
+						</div>
+					</a>
+				</template>
+			</section>
+		</main>
+
+		<footer>
+			<nav>
+				<a href="#">Confidentialité</a>
+				<a href="#">Conditions d'utilisation</a>
+			</nav>
+
+			<p>&copy; 2024 CUBE. Tous droits réservés.</p>
+		</footer>
+	</body>
+
+    <script>
+        window.addEventListener("load", initAppCommande);
+		async function initAppCommande() {
+			// vérifier si utilisateur connecté //
+			const user = getUser();
+
+			// si non connecté //
+			if (!user) {
+				displayNoUserElements();
+			} else {
+				displayUserElements();
+			}
+
+			// obtenir les données depuis des produits //
+			const commandes = await getCommandes();
+
+			// si erreur afficher un message //
+			if (!commandes) {
+				afficherNoCommandesElements();
+			}
+			// créer et ajouter les cartes au DOM //
+			else {
+				afficherCommandesElements(commandes);
+			}
+		}
+    </script>
+</html> 

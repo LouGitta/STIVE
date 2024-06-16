@@ -6,24 +6,29 @@
 		<title>Panier</title>
 
 		<link rel="stylesheet" href="style/style.css">
+		<script src="./script/main.js" defer></script>
+
 	</head>
 	<body>
 		<header>
 			<h1>STIVE</h1>
 
 			<nav>
+                <a href="/STIVE/front/" class="">Acceuil</a>
+                <a href="/STIVE/front/panier" class="">Panier</a>
+
 				<!-- si pas d'utilisateur -->
-				<a href="http://localhost/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
+				<a href="/STIVE/front/login.html" class="noUserElement hidden">Connexion</a>
 
 				<!-- si utilisateur -->
-                <a href="http://localhost/STIVE/front/commandes" class="userElement hidden">Commandes</a>
-				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
+                <a href="/STIVE/front/commande" class="userElement hidden">Commandes</a>
+				<a href="" class="userElement hidden" onclick="disconnect()">Déconnexion</a>
 			</nav>
 		</header>
 
 		<main>
 			<div class="breadcrumb">
-				<a class="bread-acceuil" href="http://localhost/STIVE/front/">Accueil</a> / <span class="panier-page">panier</span>
+				<a class="bread-acceuil" href="/STIVE/front/">Accueil</a> / <span class="panier-page">panier</span>
 			</div>
 			<!-- si utilisateur -->
 			<section class="user--container userElement hidden">
@@ -78,7 +83,7 @@
 									<h1 class="sous--total">0 €</h1>
 								</div>
 							</div>
-							<div class="confirmer--panier">
+							<div class="confirmer--panier hidden">
 								<button onclick="validerPanier()" class="btn">Valider votre panier</button>
 							</div>
 						</div>
@@ -156,197 +161,12 @@
 
 			// si erreur afficher un message //
 			if (!panier) {
-				displayNoProductsElements();
+				afficherNoPanierElements();
 			}
 			// créer et ajouter les cartes au DOM //
 			else {
-				displayProductsElements(panier);
+				afficherPanierElements(panier);
 			}
 		 }
-
-		// vérifier si utilisateur connecté //
-		function getUser() {
-			if (!window.localStorage.getItem("user")) {
-				return null;
-			} else {
-				return JSON.parse(window.localStorage.getItem("user"));
-			}
-		}
-
-		// si non connecté //
-		function displayNoUserElements() {
-			const noUserElements = document.querySelectorAll(".noUserElement");
-			for (let element of noUserElements) {
-				element.classList.toggle("hidden");
-			}
-		}
-
-		// si connecté //
-		function displayUserElements() {
-			const userElements = document.querySelectorAll(".userElement");
-			for (let element of userElements) {
-				element.classList.toggle("hidden");
-			}
-
-			const user = getUser();
-			const userNameElement = document.querySelector(".user--container span");
-			userNameElement.innerHTML = user.name;
-		}
-
-		// obtenir les données depuis des produits //
-		async function getProduitsPanier() {
-			// url pour récupérer ma liste d'articles //
-			const produits = JSON.parse(localStorage.getItem('panier'))
-			
-			if (produits) {
-				console.table(produits)
-				return produits
-			}
-		}
-
-		// si erreur afficher un message //
-		function displayNoProductsElements() {
-			const message = "Il n'y a pas d'article dans le panier !";
-			const errorMessageElement = document.querySelector(
-				".errorMessageElement"
-			);
-
-			errorMessageElement.innerHTML = message;
-			errorMessageElement.classList.toggle("hidden");
-		}
-
-		// affichage des produits //
-		function displayProductsElements(panier) {
-			// l'élément qui reçoit les cartes //
-			const container = document.querySelector(".produit--panier");
-
-			var prixTotal = 0;
-			var quantiteTotal = 0;
-
-			for (let produit of panier) {
-				// le template pour créer les cartes plus simplement //
-				const template = document
-					.querySelector("#produitPanier")
-					.content.cloneNode(true);
-
-				// dataset pour faciliter le travail avec les filtres //
-				const quantite = produit.quantite
-				const prixUnite = produit.produit.prix;
-				const totalProduit = quantite*prixUnite;
-
-				quantiteTotal += parseInt(quantite);
-				prixTotal += totalProduit;
-				// afficher les informations dans les cartes //
-				if (produit.produit.image) {
-					img = template.querySelector("img")
-					img.src = `/STIVE/front/imageProduit/${produit.produit.image}`;
-					img.width = 150;
-					img.height = 150;
-				} else {
-					console.log('no image')
-				}
-				template.querySelector(".nom").innerHTML = produit.produit.nom;
-				template.querySelector(".region").innerHTML = produit.produit.region;
-				template.querySelector(".famille").innerHTML = produit.produit.famille;
-				template.querySelector(".quantite").innerHTML = quantite;
-				template.querySelector(".prix--cumul").innerHTML = totalProduit +' €';
-				template.querySelector(".prix--unite").innerHTML = produit.produit.prix+'€ / unité';
-				console.log(template)
-
-				// ne pas oublier d'insérer les cartes dans leur container //
-				container.appendChild(template);
-
-				
-			}
-			document.querySelector(".quantite--total").innerHTML = quantiteTotal + ' produits';
-			document.querySelector(".sous--total").innerHTML = prixTotal + ' €';
-		}
-
-        function disconnect(){
-            window.localStorage.removeItem("user")
-            location.reload()
-        }
-
-		function validerPanier() {
-			document.querySelector(".livraison--emptybox").classList.toggle("hidden");
-		}
-
-		function validerAdresse() {
-			document.querySelector(".paiement").classList.toggle("hidden");
-		}
-
-		function getDate() {
-			const today = new Date();
-			const year = today.getFullYear();
-			const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-			const day = String(today.getDate()).padStart(2, '0');
-
-			return `${year}-${month}-${day}`;
-		}
-
-		function validerPaiement() {
-			alert('Paiement validé !');
-
-			const data = JSON.parse(localStorage.getItem('panier'))
-
-			var produits = [];
-
-			var prixTotal = 0;
-			var quantiteTotal = 0;
-
-			for (let produit of data) {
-				// dataset pour faciliter le travail avec les filtres //
-				const id = produit.produit.id;
-				const quantite = produit.quantite
-				const prixUnite = produit.produit.prix;
-				const totalProduit = quantite*prixUnite;
-
-				quantiteTotal += parseInt(quantite);
-				prixTotal += totalProduit;
-
-				const panier = {
-				'produit_id': id,
-				'quantite': quantite,
-				'prix' : prixUnite,
-				};
-				
-				produits.push(panier)
-			}
-			
-			const commande = {
-				//'userid' : userid
-				'date_commande' : getDate(),
-				'quantite_commande': quantiteTotal,
-				'prix_commande': prixTotal,
-				'produits' : produits,
-			};
-			console.log(commande)
-			const url = "http://localhost/STIVE/api/commande";
-			
-			postCommande(url, commande)
-			.then(commande => {
-				console.log(commande);
-			})
-			.catch((error) => {
-				console.error(error);
-				alert(error)
-			});
-
-
-			// window.location.href ="http://localhost/STIVE/front/";
-		}
-
-		async function postCommande(url = '', data = {}) {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: {
-				'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(data)
-			});
-			console.log(response)
-			alert(response)
-			return response;
-		}
 	</script>
 </html> 

@@ -6,25 +6,27 @@
 		<title>Produit</title>
 
 		<link rel="stylesheet" href="./style/style.css" />
+		<script src="./script/main.js" defer></script>
 	</head>
 	<body>
 		<header>
 			<h1>Stive</h1>
 
 			<nav>
+				<a href="/STIVE/front/" >Accueil</a>
+				<a href="/STIVE/front/panier" >Panier</a>
 				<!-- si pas d'utilisateur -->
-				<a href="http://localhost/STIVE/api/login_system/login.php" class="noUserElement hidden">Connexion</a>
+				<a href="/STIVE/front/login.html" class="noUserElement hidden">Connexion</a>
 
 				<!-- si utilisateur -->
-				<a href="http://localhost/STIVE/front/panier" class="userElement hidden">Panier</a>
-				<a href="http://localhost/STIVE/front/commandes" class="userElement hidden">Commandes</a>
-				<button class="userElement hidden" onclick="disconnect()">Déconnexion</button>
+				<a href="/STIVE/front/commande" class="userElement hidden">Commandes</a>
+				<a href="" class="userElement hidden" onclick="disconnect()">Déconnexion</a>
 			</nav>
 		</header>
 
 		<main>
 			<div class="breadcrumb">
-				<a class="bread-acceuil" href="http://localhost/STIVE/front/">Accueil</a> / <span class="produit-page"></span>
+				<a class="bread-acceuil" href="/STIVE/front/">Accueil</a> / <span class="produit-page"></span>
 			</div>
 
 			<!-- si utilisateur -->
@@ -44,7 +46,7 @@
 					<div class="produit">
 						<div class="produit-image">
 							<!-- image du produit -->
-							<img class="image" src="https://dummyimage.com/600x400" alt="" />
+							<img class="image" src="https://dummyimage.com/300x300" alt="" />
 						</div>
 						<div class="produit-info">
 							<p class="produit-nom" id="nom"></p>
@@ -53,6 +55,7 @@
 							<div class="panier">
 								<input class="produit-quantite" id="quantite" min="1" value="1" type="number">
 								<button onclick="addToCart()"  class="ajout-panier btn">Ajouter au panier</button>
+								<span class="help-block">aaaaaaaaaa</span>
 							</div>
 						</div>
 					</div>
@@ -84,164 +87,18 @@
 			}
 
 			// obtenir les données depuis des produits //
-			const product = await getProduct();
+			const product = await getProduit();
 
 			// si erreur afficher un message //
 			if (!product) {
-				displayNoProductElements();
+				afficherNoProduitElements();
 			}
 			// créer et ajouter les cartes au DOM //
 			else {
 				document.title = product.nom
-				displayProductElement(product);
-				// mise en place des filtres //
+				afficherProduitElements(product);
 				
 			}
 		}
-
-		// vérifier si utilisateur connecté //
-		function getUser() {
-			if (!window.localStorage.getItem("user")) {
-				return null;
-			} else {
-				return JSON.parse(window.localStorage.getItem("user"));
-			}
-		}
-
-		// si non connecté //
-		function displayNoUserElements() {
-			const noUserElements = document.querySelectorAll(".noUserElement");
-			for (let element of noUserElements) {
-				element.classList.toggle("hidden");
-			}
-		}
-
-		// si connecté //
-		function displayUserElements() {
-			const userElements = document.querySelectorAll(".userElement");
-			for (let element of userElements) {
-				element.classList.toggle("hidden");
-			}
-
-			const user = getUser();
-			const userNameElement = document.querySelector(".user--container span");
-			userNameElement.innerHTML = user.name;
-		}
-
-		// obtenir les données depuis des produits //
-		async function getProduct() {
-			const id = window.location.search.split('=')[1]
-			// url pour récupérer mon produit //
-			const url = "http://localhost/STIVE/api/produit/?id"+id;
-
-			try {
-				// récupération des données depuis l'api //
-				const response = await fetch(url);
-				const data = await response.json();
-				console.table(data);
-
-				return data;
-			} catch (error) {
-				// si erreur, on affiche le message //
-				console.log(error.message);
-			}
-		}
-
-		// si erreur afficher un message //
-		function displayNoProductElements() {
-			const message = "Il n'y a pas d'article à présenter !";
-			const errorMessageElement = document.querySelector(
-				".errorMessageElement"
-			);
-
-			errorMessageElement.innerHTML = message;
-			errorMessageElement.classList.toggle("hidden");
-		}
-
-		// affichage des produits //
-		function displayProductElement(product) {
-        // l'élément qui reçoit les cartes //
-		document.querySelector(".produit-page").textContent = product.nom;
-        const container = document.querySelector(".produit-container");
-
-        // le template pour créer les cartes plus simplement //
-        const template = document
-          .querySelector("#templateDetailProduit")
-          .content.cloneNode(true);
-		
-        // afficher les informations dans les cartes //
-		if (product.image) {
-			img = template.querySelector("img")
-			img.src = `/STIVE/front/imageProduit/${product.image}`;
-			img.width = 300;
-			img.height = 300;
-		} else {
-			console.log('no image')
-		}
-
-        template.querySelector("#nom").textContent = product.nom;
-        template.querySelector("#prix").textContent = `${product.prix}`+' €';
-        template.querySelector("#description").textContent = product.description;
-        template.querySelector("#quantite").max = product.quantite_stock;
-
-
-        // ne pas oublier d'insérer les cartes dans leur container //
-        container.appendChild(template);
-		localStorage.setItem('produitActuel', JSON.stringify(product));
-
-      }
-		// @clik sur un filtre //
-		function handleFilterClick(event) {
-			const filterType = event.currentTarget.value;
-
-			const cards = document.querySelectorAll(".card--container");
-			for (let card of cards) {
-				if (card.dataset["famille"] === filterType) {
-					showCard(card);
-				} else {
-					hideCard(card);
-				}
-			}
-		}
-
-		function showCard(card) {
-			if (card.classList.contains("hidden")) {
-				card.classList.toggle("hidden");
-			}
-		}
-
-		function hideCard(card) {
-			if (!card.classList.contains("hidden")) {
-				card.classList.toggle("hidden");
-			}
-		}
-
-		function addToCart(){
-			const quantite = document.getElementById("quantite").value
-			const produit = JSON.parse(localStorage.getItem('produitActuel'))
-
-			const panier = {
-			'quantite': quantite,
-			'produit': produit
-			};
-
-			let storage = localStorage.getItem('panier');
-
-			if (storage) {
-				const panierExistant = JSON.parse(storage);
-				
-				panierExistant.push(panier);
-				
-				localStorage.setItem('panier', JSON.stringify(panierExistant));
-			} else {
-				localStorage.setItem('panier', JSON.stringify([panier]));
-			}
-			
-		}
-
-		function disconnect(){
-            window.localStorage.removeItem("user")
-            location.reload()
-        }
 	</script>
 </html> 
