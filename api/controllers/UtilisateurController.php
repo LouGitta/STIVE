@@ -60,7 +60,9 @@ class UtilisateurController {
             foreach ($att_utilisateur as $att) {
                 if ($att !== 'id'){
                     if ($att === 'mdp'){
+
                     $utilisateur->$att = password_hash($data->$att, PASSWORD_DEFAULT);
+                    print_r($utilisateur->$att);
                 } else {
                         $utilisateur->$att = $data->$att;
                     }
