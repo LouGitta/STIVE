@@ -22,7 +22,7 @@ class ArticleController {
             echo json_encode($tableau);
 
         
-        } elseif ($param['id']) {
+        } else if ($param['id']) {
             $article = Article::find_one($param['id']);
             if ($article) {
                 echo json_encode($article->as_array());

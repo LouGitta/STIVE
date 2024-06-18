@@ -19,7 +19,7 @@ class ProduitController {
                 http_response_code(404);
                 echo json_encode(["error" => "Produit non trouve"]);
             }
-        } elseif ($param) {
+        } else if ($param) {
             $tableau = [];
             foreach($param as $key => $value){
                 $produits = Produit::where($key,$value)->find_many();
@@ -54,63 +54,73 @@ class ProduitController {
     }
 
 
-    function post($data, $param, $image){
-        
-        $produit = Produit::create();
-        foreach ($this->att_produit as $att) {
-            if ($att !== 'id'){
-                if ($att === 'image') {
-                    $produit->$att = basename($image['name']);
-                } else {
-                    $produit->$att = $data->$att;
-                }
-            }
-        }
-        $produit->save();
-        $tab['id'] = $produit->id;
-                    
-        if (isset($image)) {
-            $image_name = basename($image['name']);
-            $dossier_cible = __DIR__ . "/../../front/imageProduit/";
-            $lieu_image = $dossier_cible . $image_name;
-
-            $fileType = pathinfo($lieu_image, PATHINFO_EXTENSION);
-            $check = getimagesize($image['tmp_name']);
-
-            if ($check !== false) {
-                $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
-                if (in_array($fileType, $allowedTypes)) {
-                    if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
-                        $response['file'] = "The file has been uploaded successfully.";
+    function post($data, $param, $image, $authorization){
+        if ($authorization == 'admin'){
+            $produit = Produit::create();
+            foreach ($this->att_produit as $att) {
+                if ($att !== 'id'){
+                    if ($att === 'image') {
+                        $produit->$att = basename($image['name']);
                     } else {
-                        $response['file'] = "Sorry, there was an error uploading your file.";
+                        $produit->$att = $data->$att;
                     }
-                } else {
-                    $response['file'] = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.";
                 }
-            } else {
-                $response['file'] = "File is not an image.";
-            }
-        } else {
-                $response['file'] = "No file was uploaded.";
-            }
-
-        print_r($response);
-    }
-
-    function patch($id, $data){
-        if ($id){
-            $produit = Produit::find_one($id);
-            foreach ($data as $key => $value){
-            $produit->$key = $value;
             }
             $produit->save();
             $tab['id'] = $produit->id;
-            echo json_encode($tab);
-
+                        
+            if (isset($image)) {
+                $image_name = basename($image['name']);
+                $dossier_cible = __DIR__ . "/../../front/imageProduit/";
+                $lieu_image = $dossier_cible . $image_name;
+    
+                $fileType = pathinfo($lieu_image, PATHINFO_EXTENSION);
+                $check = getimagesize($image['tmp_name']);
+    
+                if ($check !== false) {
+                    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+                    if (in_array($fileType, $allowedTypes)) {
+                        if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
+                            $response['file'] = "The file has been uploaded successfully.";
+                        } else {
+                            $response['file'] = "Sorry, there was an error uploading your file.";
+                        }
+                    } else {
+                        $response['file'] = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.";
+                    }
+                } else {
+                    $response['file'] = "File is not an image.";
+                }
+            } else {
+                    $response['file'] = "No file was uploaded.";
+                }
+    
+            print_r($response);
         } else {
-        http_response_code(405);
-        echo json_encode(["error" => "Pas d'id fourni"]);
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+        }
+    }
+
+    function patch($id, $data, $authorization){
+        if ($authorization == 'admin'){
+            
+            if ($id){
+                $produit = Produit::find_one($id);
+                foreach ($data as $key => $value){
+                $produit->$key = $value;
+                }
+                $produit->save();
+                $tab['id'] = $produit->id;
+                echo json_encode($tab);
+
+            } else {
+            http_response_code(405);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
+            }
+        } else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
 

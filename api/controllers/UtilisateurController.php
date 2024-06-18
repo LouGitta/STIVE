@@ -21,27 +21,31 @@ class UtilisateurController {
         $this->secretKey = $secretKey;
     }
 
-    function get($param){
-        if (isset($param['id'])) {
-
-            $utilisateur = Utilisateur::find_one($param['id']);
-            if ($utilisateur) {
-                echo json_encode($utilisateur->as_array());
+    function get($param, $authorization){
+        if ($authorization == 'admin'){
+            if (isset($param['id'])) {
+                $utilisateur = Utilisateur::find_one($param['id']);
+                if ($utilisateur) {
+                    echo json_encode($utilisateur->as_array());
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["error" => "Utilisateur non trouve"]);
+                }
             } else {
-                http_response_code(404);
-                echo json_encode(["error" => "Utilisateur non trouve"]);
+                $utilisateurs = Utilisateur::find_many();
+                $tableau = [];
+                foreach ($utilisateurs as $p) {
+                    $utilisateurArray = [];
+                    foreach ($this->att_utilisateur_full as $att) {
+                        $utilisateurArray[$att] = $p->$att;
+                    }
+                    $tableau[] = $utilisateurArray;
+                }
+                echo json_encode($tableau);
             }
         } else {
-            $utilisateurs = Utilisateur::find_many();
-            $tableau = [];
-            foreach ($utilisateurs as $p) {
-                $utilisateurArray = [];
-                foreach ($this->att_utilisateur_full as $att) {
-                    $utilisateurArray[$att] = $p->$att;
-                }
-                $tableau[] = $utilisateurArray;
-            }
-            echo json_encode($tableau);
+                http_response_code(401);
+                echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
 
@@ -85,7 +89,7 @@ class UtilisateurController {
 
                         $payload = [
                             'iat' => time(),
-                            'exp' => time() + 36000,
+                            'exp' => time() + 86400,
                             'data' => [
                                 'id' => $utilisateur->id,
                                 'prenom' => $utilisateur->prenom,
@@ -114,18 +118,23 @@ class UtilisateurController {
     }
 
     function patch($id, $data){
-        if ($id){
-            $utilisateur = Utilisateur::find_one($id);
-            foreach ($data as $key => $value){
-            $utilisateur->$key = $value;
-            }
-            $utilisateur->save();
-            $tab['id'] = $utilisateur->id;
-            echo json_encode($tab);
+        if ($authorization == 'admin'){
+            if ($id){
+                $utilisateur = Utilisateur::find_one($id);
+                foreach ($data as $key => $value){
+                $utilisateur->$key = $value;
+                }
+                $utilisateur->save();
+                $tab['id'] = $utilisateur->id;
+                echo json_encode($tab);
 
+            } else {
+            http_response_code(405);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
+            }
         } else {
-        http_response_code(405);
-        echo json_encode(["error" => "Pas d'id fourni"]);
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
 

@@ -5,7 +5,8 @@ require_once __DIR__ . '/controllers/CommandeController.php';
 require_once __DIR__ . '/controllers/UtilisateurController.php';
 require_once __DIR__ . '/controllers/ArticleController.php';
 
-
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -30,55 +31,104 @@ $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
 $controller = '';
 
+$authorization = authorize($headers);
+
 // Page redirect
 switch ($url_list[0]) {
     case '':
         header("Location: acceuilapi.php");
         break;
+
     case 'produit':
         $controller = new ProduitController();
         break;
+
     case 'utilisateur':
         $controller = new UtilisateurController();
         break;
+
     case 'commande':
-        $controller = new CommandeController();
+        if ($authorization == 'admin' || 'client'){
+            $controller = new CommandeController();
+        }  else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+        }
         break;
-    case 'test':
-        echo 'test';
-        break;
+
     case 'article':
+        if ($authorization == 'admin' || 'client'){
         $controller = new ArticleController();
+        } else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+        }
         break;
+        
     case 'restock':
-        $controller = new RestockController();
+        if ($authorization == 'admin'){
+            $controller = new RestockController();
+        } else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+        }
         break;
-    // add case for more page
+        // add case for more page
     default:
         http_response_code(404);
-        echo json_encode(["error" => "Page non trouvée"]);
+        echo json_encode(['status' => 'error', 'message' => "Page non trouvée"]);    
     }
 
-// Method redirect
-if ($controller) {
+        // Method redirect
+        if ($controller) {
     switch ($method) {
         case 'GET':
-            $controller->get($_GET, $data);
+            $controller->get($_GET, $authorization);
             break;
+
         case 'POST':
-            $controller->post($data, $headers, $image);
+            $controller->post($data, $headers, $image, $authorization);
             break;
+
         case 'PATCH':
-            $controller->patch($id, $data);
+            if ($authorization == 'admin' || 'client'){
+                $controller->patch($id, $data, $authorization);
+            } else {
+                http_response_code(401);
+                echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+            }
             break;
+            
         case 'DELETE':
-            $controller->delete($id);
+            if ($authorization == 'admin'){
+                $controller->delete($id);
+            } else {
+                http_response_code(401);
+                echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+            }
             break;
         default:
             http_response_code(405);
-            
-            echo json_encode(["error" => "Méthode non autorisée"]);
+            echo json_encode(['status' => 'error', 'message' => "Méthode non autorisée"]);
             break;
     }
 }
+
+function authorize($token){
+    if (!empty($token['Authorization'])) {
+        if (preg_match('/Bearer\s(\S+)/', $token, $matches)) {
+            $secretKey = parse_ini_file(__DIR__ . '/../jwtHandler.env')['JWT_SECRET_KEY'] ?? null;
+            $decoded = JWT::decode($matches[1], new Key($secretKey, 'HS256'));
+            print_r($decoded->data);
+            if ($decoded->data->admin === 1){
+                return 'admin';
+            } else {
+                return 'client';
+            }
+        }
+    } else {
+        return 'rien';
+    }
+}
+
 ?>

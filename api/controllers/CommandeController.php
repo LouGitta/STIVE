@@ -10,84 +10,94 @@ class CommandeController {
     public $att_commande = ['id', 'reference_commande', 'date_commande', 'utilisateur_id', 'quantite_commande', 'prix_commande'];
     public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
-    function get($param){
-        if (isset($param['id'])) {
+    function get($param, $authorization){
+        if ($authorization == 'admin' || 'client'){
+            if (isset($param['id'])) {
 
-            $commande = Commande::find_one($param['id']);
-            if ($commande) {
-                echo json_encode($commande->as_array());
-            } else {
-                http_response_code(404);
-                echo json_encode(["error" => "Commande non trouve"]);
-            }
-
-        } else if (isset($param['utilisateur_id'])) {
-            $commandes = Commande::where('utilisateur_id', $param['utilisateur_id'])->find_many();
-            $tableau = [];
-            foreach ($commandes as $p) {
-                $commandeArray = [];
-                foreach ($this->att_commande as $att) {
-                    $commandeArray[$att] = $p->$att;
+                $commande = Commande::find_one($param['id']);
+                if ($commande) {
+                    echo json_encode($commande->as_array());
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["error" => "Commande non trouve"]);
                 }
-                $tableau[] = $commandeArray;
-            }
-            echo json_encode($tableau);
 
-        } else {
+            } else if (isset($param['utilisateur_id'])) {
+                $commandes = Commande::where('utilisateur_id', $param['utilisateur_id'])->find_many();
+                $tableau = [];
+                foreach ($commandes as $p) {
+                    $commandeArray = [];
+                    foreach ($this->att_commande as $att) {
+                        $commandeArray[$att] = $p->$att;
+                    }
+                    $tableau[] = $commandeArray;
+                }
+                echo json_encode($tableau);
+
+            }
+        }else if ($authorization == 'admin'){
             $commandes = Commande::find_many();
-            $tableau = [];
-            foreach ($commandes as $p) {
-                $commandeArray = [];
-                foreach ($this->att_commande as $att) {
-                    $commandeArray[$att] = $p->$att;
+                $tableau = [];
+                foreach ($commandes as $p) {
+                    $commandeArray = [];
+                    foreach ($this->att_commande as $att) {
+                        $commandeArray[$att] = $p->$att;
+                    }
+                    $tableau[] = $commandeArray;
                 }
-                $tableau[] = $commandeArray;
-            }
-            echo json_encode($tableau);
+                echo json_encode($tableau);
+        } else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
 
 
-    function post($data){
-        $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s:ms')), 8, 8);
-        try {
-            // Creation de la commande
-            $commande = Commande::create();
-                foreach ($this->att_commande as $att) {
-                    if ($att !== 'id'){
-                        if ($att === 'reference_commande') {
-                            $commande->$att = $reference;
-                        } else {
-                        $commande->$att = $data->$att;
-                        }
-                    }
-                }
-            $commande->save();
-            $tab['id'] = $commande->id;
-            
-            // Creation des articles de la commandes
-            foreach ($data->produits as $data) {
-                $article = Article::create();
-                    foreach ($this->att_article as $att) {
+    function post($data, $headers, $image, $authorization){
+        if ($authorization == 'admin' || 'client'){
+            $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s:ms')), 8, 8);
+            try {
+                // Creation de la commande
+                $commande = Commande::create();
+                    foreach ($this->att_commande as $att) {
                         if ($att !== 'id'){
-                            if ($att === 'commande_id') {
-                                $article->$att =  $tab['id'];
+                            if ($att === 'reference_commande') {
+                                $commande->$att = $reference;
                             } else {
-                                $article->$att = $data->$att;
+                            $commande->$att = $data->$att;
                             }
                         }
                     }
-                $article->save();
-            }
-            $succes = array('status' => 'success', 'message' => 'La commande est validée', 'numero' => $reference);
-            echo json_encode($succes, JSON_UNESCAPED_UNICODE);
-            
-            // Mise a jour du stock des produits
-            $this->stockUpdate($data);
+                $commande->save();
+                $tab['id'] = $commande->id;
+                
+                // Creation des articles de la commandes
+                foreach ($data->produits as $data) {
+                    $article = Article::create();
+                        foreach ($this->att_article as $att) {
+                            if ($att !== 'id'){
+                                if ($att === 'commande_id') {
+                                    $article->$att =  $tab['id'];
+                                } else {
+                                    $article->$att = $data->$att;
+                                }
+                            }
+                        }
+                    $article->save();
+                }
+                $succes = array('status' => 'success', 'message' => 'La commande est validée', 'numero' => $reference);
+                echo json_encode($succes, JSON_UNESCAPED_UNICODE);
+                
+                // Mise a jour du stock des produits
+                $this->stockUpdate($data);
 
-        } catch (Exception $e) {
-            $error = array('error' => $e, 'message' => 'La commande a échoué');
-            echo json_encode($error, JSON_UNESCAPED_UNICODE);
+            } catch (Exception $e) {
+                $error = array('error' => $e, 'message' => 'La commande a échoué');
+                echo json_encode($error, JSON_UNESCAPED_UNICODE);
+            }
+        }else {
+            http_response_code(401);
+            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
 
     }
@@ -103,8 +113,8 @@ class CommandeController {
             echo json_encode($tab);
 
         } else {
-        http_response_code(405);
-        echo json_encode(["error" => "Pas d'id fourni"]);
+            http_response_code(405);
+            echo json_encode(["error" => "Pas d'id fourni"]);
         }
     }
 
