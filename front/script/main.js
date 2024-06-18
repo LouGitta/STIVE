@@ -305,57 +305,68 @@ async function inscription(event) {
     const formData = new FormData(form);
     
     const formValues = Object.fromEntries(formData.entries());
-    
-    
-    const response = await fetch("/STIVE/api/utilisateur/", {
-        method: "POST",
-        body: JSON.stringify(formValues),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        "action-type": "register",
-        "app-type": "website"
+    if (formValues.nom != "" && formValues.prenom != "" && formValues.mail != "" && formValues.mdp != "" && formValues.mdp-confirmer != ""){
+        if (formValues.mdp-confirmer === formValues.mdp) {
+
+            const response = await fetch("/STIVE/api/utilisateur/", {
+                method: "POST",
+                body: JSON.stringify(formValues),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "action-type": "register",
+                    "app-type": "website"
+                }
+            })
+            
+                const data = await response.json();
+
+            if (data.success) {
+                alert("Inscription réussie");
+                window.location.replace("/STIVE/front/login.html")
+            } else {
+                console.log("Registration failed:", data.message);
+            }
+        } else {
+            alert("Le mot de passe doit être identique")
         }
-    })
-    
-    const data = await response.json();
-
-    if (data.success) {
-        alert("Inscription réussie successful");
-        window.location.replace("/STIVE/front/login.html")
     } else {
-        console.log("Registration failed:", data.message);
+        alert("Au moins un champ n'est pas rempli")
     }
+}    
 
-}
 
 
 async function connexion(event){
     event.preventDefault();
-
+    
     const form = event.target.closest('form');
-
+    
     const formData = new FormData(form);
-
+    
     const formValues = Object.fromEntries(formData.entries());
+    
+    if (formValues.mail != "" && formValues.mdp != ""){
+        const response = await fetch("/STIVE/api/utilisateur/", {
+            method: "POST",
+            body: JSON.stringify(formValues),
+            headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "action-type": "login",
+            "app-type": "website"
+            }
+        })
 
-    const response = await fetch("http://localhost/STIVE/api/utilisateur/", {
-        method: "POST",
-        body: JSON.stringify(formValues),
-        headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        "action-type": "login",
-        "app-type": "website"
+        const data = await response.json();
+        if (data.status) {
+            window.localStorage.setItem("token", data.token)
+
+            alert("Connexion réussie");
+            window.location.replace("/STIVE/front/index.html")
+        } else {
+            console.log("Connexion échouée:", data.message);
         }
-    })
-
-    const data = await response.json();
-    if (data.status) {
-        window.localStorage.setItem("token", data.token)
-
-        alert("Connexion réussie");
-        window.location.replace("/STIVE/front/index.html")
     } else {
-        console.log("Connexion échouée:", data.message);
+        alert("Mail ou mot de passe manquant")
     }
 }
 
@@ -399,10 +410,10 @@ async function getProduitsPanier() {
 
 function afficherPanierElements(panier) {
     // l'élément qui reçoit les cartes //
-    const confirmerPanierElement = document.querySelector(".confirmer--panier");
-    if (confirmerPanierElement) {
-        confirmerPanierElement.classList.toggle("hidden");
-    }
+    // const confirmerPanierElement = document.querySelector(".confirmer--panier");
+    // if (confirmerPanierElement) {
+    //     confirmerPanierElement.classList.toggle("hidden");
+    // }
 
     const container = document.querySelector(".produit--panier");
 
@@ -459,7 +470,13 @@ function afficherNoPanierElements() {
 }
 
 function validerPanier() {
-    document.querySelector(".livraison--emptybox").classList.toggle("hidden");
+    if (!localStorage.getItem('panier')){
+        alert('Votre panier est vide VINGT DIEUX !')
+    } else if (!localStorage.getItem('token')) {
+        alert('Votre devez être connecté pour valider votre commande !')
+    } else {
+        document.querySelector(".livraison--emptybox").classList.toggle("hidden");
+    }
 }
 
 function validerAdresse() {
