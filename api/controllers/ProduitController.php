@@ -60,7 +60,8 @@ class ProduitController {
             foreach ($this->att_produit as $att) {
                 if ($att !== 'id'){
                     if ($att === 'image') {
-                        $produit->$att = basename($image['name']);
+                        $produit->$att = "";
+                        // basename($image['name']);
                     } else {
                         $produit->$att = $data->$att;
                     }
@@ -69,32 +70,32 @@ class ProduitController {
             $produit->save();
             $tab['id'] = $produit->id;
                         
-            if (isset($image)) {
-                $image_name = basename($image['name']);
-                $dossier_cible = __DIR__ . "/../../front/imageProduit/";
-                $lieu_image = $dossier_cible . $image_name;
+            // if (isset($image)) {
+            //     $image_name = basename($image['name']);
+            //     $dossier_cible = __DIR__ . "/../../front/imageProduit/";
+            //     $lieu_image = $dossier_cible . $image_name;
     
-                $fileType = pathinfo($lieu_image, PATHINFO_EXTENSION);
-                $check = getimagesize($image['tmp_name']);
+            //     $fileType = pathinfo($lieu_image, PATHINFO_EXTENSION);
+            //     $check = getimagesize($image['tmp_name']);
     
-                if ($check !== false) {
-                    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
-                    if (in_array($fileType, $allowedTypes)) {
-                        if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
-                            echo json_encode(['status' => 'success', 'message' => "L'image à bien été téléchargée"]);
-                        } else {
-                            echo json_encode(['status' => 'error', 'message' => "Une erreur s'est produite pendant le téléchargement de l'image"]);
-                        }
-                    } else {
-                        echo json_encode(['status' => 'error', 'message' => "Seulement les formats JPG, JPEG, PNG, & GIF sont autorisés"]);
+            //     if ($check !== false) {
+            //         $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
+            //         if (in_array($fileType, $allowedTypes)) {
+            //             if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
+            //                 echo json_encode(['status' => 'success', 'message' => "L'image à bien été téléchargée"]);
+            //             } else {
+            //                 echo json_encode(['status' => 'error', 'message' => "Une erreur s'est produite pendant le téléchargement de l'image"]);
+            //             }
+            //         } else {
+            //             echo json_encode(['status' => 'error', 'message' => "Seulement les formats JPG, JPEG, PNG, & GIF sont autorisés"]);
 
-                    }
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => "Le fichier n'est pas une image"]);
-                }
-            } else {
-                echo json_encode(['status' => 'error', 'message' => "Aucun fichier uploadé"]);
-            }
+            //         }
+            //     } else {
+            //         echo json_encode(['status' => 'error', 'message' => "Le fichier n'est pas une image"]);
+            //     }
+            // } else {
+            //     echo json_encode(['status' => 'error', 'message' => "Aucun fichier uploadé"]);
+            // }
         } else {
             http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);

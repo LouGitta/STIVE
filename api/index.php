@@ -25,7 +25,6 @@ if (!empty(file_get_contents('php://input'))){
 } else if (isset($_POST['data'])) {
     $data = json_decode($_POST['data']);
 }
-
 $base_url = "/STIVE/api/";
 $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
@@ -92,7 +91,7 @@ switch ($url_list[0]) {
 
         case 'PATCH':
             if ($authorization == 'admin' || 'client'){
-                $controller->patch($id, $data, $authorization);
+                $controller->patch($_GET['id'], $data, $authorization);
             } else {
                 http_response_code(401);
                 echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
@@ -101,7 +100,7 @@ switch ($url_list[0]) {
             
         case 'DELETE':
             if ($authorization == 'admin'){
-                $controller->delete($id);
+                $controller->delete($_GET['id']);
             } else {
                 http_response_code(401);
                 echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
@@ -116,10 +115,9 @@ switch ($url_list[0]) {
 
 function authorize($token){
     if (!empty($token['Authorization'])) {
-        if (preg_match('/Bearer\s(\S+)/', $token, $matches)) {
+        if (preg_match('/Bearer\s(\S+)/', $token['Authorization'], $matches)) {
             $secretKey = parse_ini_file(__DIR__ . '/../jwtHandler.env')['JWT_SECRET_KEY'] ?? null;
             $decoded = JWT::decode($matches[1], new Key($secretKey, 'HS256'));
-            print_r($decoded->data);
             if ($decoded->data->admin === 1){
                 return 'admin';
             } else {

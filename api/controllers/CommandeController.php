@@ -11,7 +11,7 @@ class CommandeController {
     public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
     function get($param, $authorization){
-        if ($authorization == 'admin' || 'client'){
+        if ($authorization == 'client'){
             if (isset($param['id'])) {
 
                 $commande = Commande::find_one($param['id']);

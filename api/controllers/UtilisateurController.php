@@ -86,22 +86,28 @@ class UtilisateurController {
                 $utilisateur = Utilisateur::where('mail', $mail)->find_one();
                 if ($utilisateur) {
                     if (password_verify($password, $utilisateur->mdp)) {
-
-                        $payload = [
-                            'iat' => time(),
-                            'exp' => time() + 86400,
-                            'data' => [
-                                'id' => $utilisateur->id,
-                                'prenom' => $utilisateur->prenom,
-                                'admin' => $utilisateur->is_admin,
-                                'client' => $utilisateur->is_client
-                            ]
-                        ];
+                        if ($headers['app-type'] === 'adminapp' && $utilisateur->is_admin != 1){
+                            http_response_code(401);
+                            echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
+                        } else {
                         
-                        $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
-                        $connected = array("id" => $utilisateur->id, "name" => $utilisateur->nom, "admin" => $utilisateur->is_admin);
+                            $payload = [
+                                'iat' => time(),
+                                'exp' => time() + 86400,
+                                'data' => [
+                                    'id' => $utilisateur->id,
+                                    'prenom' => $utilisateur->prenom,
+                                    'admin' => $utilisateur->is_admin,
+                                    'client' => $utilisateur->is_client
+                                ]
+                            ];
+                            
+                            $jwt = JWT::encode($payload, $this->secretKey, 'HS256');
+                            $connected = array("id" => $utilisateur->id, "name" => $utilisateur->nom, "admin" => $utilisateur->is_admin);
 
-                        echo json_encode(['status' => 'success','token' => $jwt]);
+                            echo json_encode(['status' => 'success','token' => $jwt]);
+
+                        } 
                     }
                 } else {
                     echo json_encode(['status' => 'error', 'message' => "Pas d'utilisateur trouvé avec cet email."]);
