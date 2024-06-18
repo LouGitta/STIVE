@@ -318,13 +318,13 @@ async function inscription(event) {
                 }
             })
             
-                const data = await response.json();
+                const responseData = await response.json();
 
-            if (data.success) {
+            if (responseData.status === 'success') {
                 alert("Inscription réussie");
                 window.location.replace("/STIVE/front/login.html")
             } else {
-                console.log("Registration failed:", data.message);
+                console.log("Registration failed:", responseData.message);
             }
         } else {
             alert("Le mot de passe doit être identique")
@@ -356,14 +356,14 @@ async function connexion(event){
             }
         })
 
-        const data = await response.json();
-        if (data.status) {
-            window.localStorage.setItem("token", data.token)
+        const responseData = await response.json();
+        if (responseData.status === 'success') {
+            window.localStorage.setItem("token", responseData.token)
 
             alert("Connexion réussie");
             window.location.replace("/STIVE/front/index.html")
         } else {
-            console.log("Connexion échouée:", data.message);
+            console.log("Connexion échouée:", responseData.message);
         }
     } else {
         alert("Mail ou mot de passe manquant")
@@ -409,12 +409,6 @@ async function getProduitsPanier() {
 }
 
 function afficherPanierElements(panier) {
-    // l'élément qui reçoit les cartes //
-    // const confirmerPanierElement = document.querySelector(".confirmer--panier");
-    // if (confirmerPanierElement) {
-    //     confirmerPanierElement.classList.toggle("hidden");
-    // }
-
     const container = document.querySelector(".produit--panier");
 
     var prixTotal = 0;
@@ -486,7 +480,7 @@ function validerAdresse() {
 function getDate() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
