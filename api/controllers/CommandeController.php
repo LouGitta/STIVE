@@ -19,7 +19,7 @@ class CommandeController {
                     echo json_encode($commande->as_array());
                 } else {
                     http_response_code(404);
-                    echo json_encode(["error" => "Commande non trouve"]);
+                    echo json_encode(['status' => 'error', 'message' => "Aucune commande trouvé"]);
                 }
 
             } else if (isset($param['utilisateur_id'])) {
@@ -114,7 +114,7 @@ class CommandeController {
 
         } else {
             http_response_code(405);
-            echo json_encode(["error" => "Pas d'id fourni"]);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
         }
     }
 
@@ -122,16 +122,16 @@ class CommandeController {
         if ($id){
             $commande = Commande::find_one($id);
             if (!$commande){
-                http_response_code(406);
-                echo json_encode(["error" => "Aucun commande correspondant"]);
+                http_response_code(404);
+                echo json_encode(['status' => 'error', 'message' => "Commande non trouvée"]);
             } else {
                 $commande->delete();
-                $tab["message"] = "Le commande à bien été supprimé";
-                echo json_encode($tab);
+                echo json_encode(['status' => 'success', 'message' => "La commande à bien été supprimé"]);
+
             }
         } else {
             http_response_code(405);
-            echo json_encode(["error" => "Pas d'id fourni"]);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
         }
     }
         

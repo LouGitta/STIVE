@@ -17,7 +17,7 @@ class ProduitController {
                 echo json_encode($produit->as_array());
             } else {
                 http_response_code(404);
-                echo json_encode(["error" => "Produit non trouve"]);
+                echo json_encode(['status' => 'error', 'message' => "¨Produit non trouvé"]);
             }
         } else if ($param) {
             $tableau = [];
@@ -81,21 +81,20 @@ class ProduitController {
                     $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
                     if (in_array($fileType, $allowedTypes)) {
                         if (move_uploaded_file($image['tmp_name'], $lieu_image)) {
-                            $response['file'] = "The file has been uploaded successfully.";
+                            echo json_encode(['status' => 'success', 'message' => "L'image à bien été téléchargée"]);
                         } else {
-                            $response['file'] = "Sorry, there was an error uploading your file.";
+                            echo json_encode(['status' => 'error', 'message' => "Une erreur s'est produite pendant le téléchargement de l'image"]);
                         }
                     } else {
-                        $response['file'] = "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.";
+                        echo json_encode(['status' => 'error', 'message' => "Seulement les formats JPG, JPEG, PNG, & GIF sont autorisés"]);
+
                     }
                 } else {
-                    $response['file'] = "File is not an image.";
+                    echo json_encode(['status' => 'error', 'message' => "Le fichier n'est pas une image"]);
                 }
             } else {
-                    $response['file'] = "No file was uploaded.";
-                }
-    
-            print_r($response);
+                echo json_encode(['status' => 'error', 'message' => "Aucun fichier uploadé"]);
+            }
         } else {
             http_response_code(401);
             echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
@@ -128,16 +127,15 @@ class ProduitController {
         if ($id){
             $produit = Produit::find_one($id);
             if (!$produit){
-                http_response_code(406);
-                echo json_encode(["error" => "Aucun produit correspondant"]);
+                http_response_code(404);
+                echo json_encode(['status' => 'error', 'message' => "¨Produit non trouvé"]);
             } else {
                 $produit->delete();
-                $tab["message"] = "Le produit à bien été supprimé";
-                echo json_encode($tab);
+                echo json_encode(['status' => 'success', 'message' => "Le produit à bien été supprimé"]);
             }
         } else {
             http_response_code(405);
-            echo json_encode(["error" => "Pas d'id fourni"]);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
         }
     }
         

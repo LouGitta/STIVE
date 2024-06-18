@@ -142,16 +142,16 @@ class UtilisateurController {
         if ($id){
             $utilisateur = Utilisateur::find_one($id);
             if (!$utilisateur){
-                http_response_code(406);
-                echo json_encode(["error" => "Aucun utilisateur correspondant"]);
+                http_response_code(404);
+                echo json_encode(['status' => 'error', 'message' => "Aucun utilisateur trouvé"]);
             } else {
                 $utilisateur->delete();
-                $tab["message"] = "Le utilisateur à bien été supprimé";
-                echo json_encode($tab);
+                echo json_encode(['status' => 'success', 'message' => "L'utilisateur à bien été supprimé"]);
+
             }
         } else {
             http_response_code(405);
-            echo json_encode(["error" => "Pas d'id fourni"]);
+            echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
         }
     }
         
