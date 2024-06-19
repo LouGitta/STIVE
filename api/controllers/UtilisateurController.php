@@ -6,12 +6,13 @@ require_once __DIR__ . '/../inc/models/Model.php';
 require_once realpath(__DIR__ . '/../vendor/autoload.php');
 
 use Firebase\JWT\JWT;
+// Récupère la clé secrète
 $secretKey = parse_ini_file(__DIR__ . '/../../jwtHandler.env')['JWT_SECRET_KEY'] ?? null;
 
-
-
+// Classe qui regroupe les actions des Utilisateurs
 class UtilisateurController {
-    
+
+    // Attributs de la table utilisateur
     public $att_utilisateur_full = ['id', 'nom', 'prenom','mdp', 'mail', 'is_client', 'is_admin'];
     public $att_utilisateur_register = ['id', 'nom', 'prenom','mdp', 'mail'];
     public $secretKey;
@@ -21,8 +22,10 @@ class UtilisateurController {
         $this->secretKey = $secretKey;
     }
 
+    // Actions de la méthode GET uniquement pour les administrateurs
     function get($param, $authorization){
         if ($authorization == 'admin'){
+            // S'il y a un id récupère l'utilisateur correspondant
             if (isset($param['id'])) {
                 $utilisateur = Utilisateur::find_one($param['id']);
                 if ($utilisateur) {
@@ -31,6 +34,7 @@ class UtilisateurController {
                     http_response_code(404);
                     echo json_encode(["error" => "Utilisateur non trouve"]);
                 }
+            // Sinon récupère tous les utilisateurs
             } else {
                 $utilisateurs = Utilisateur::find_many();
                 $tableau = [];
@@ -49,16 +53,16 @@ class UtilisateurController {
         }
     }
 
-
+    // Actions de la méthode POST
     function post($data, $headers){
         $att_utilisateur = [];
-
+        // Si la requête vient du site 
         if ($headers['app-type'] === 'website'){
            $att_utilisateur = $this->att_utilisateur_register;
         } else {
            $att_utilisateur = $this->att_utilisateur_full;
         }
-
+        // Actions de l'inscription
         if($headers['action-type'] === 'register') {
             $utilisateur = Utilisateur::create();
             foreach ($att_utilisateur as $att) {
@@ -77,7 +81,7 @@ class UtilisateurController {
             $tab['id'] = $utilisateur->id;
             $response['success'] = $utilisateur->id;
             echo json_encode($response);
-
+        // Actions de connexion
         }  else if ($headers['action-type'] === 'login') {
 
             if (isset($data->mail) && isset($data->mdp)) {
@@ -86,6 +90,7 @@ class UtilisateurController {
                 $utilisateur = Utilisateur::where('mail', $mail)->find_one();
                 if ($utilisateur) {
                     if (password_verify($password, $utilisateur->mdp)) {
+                        // Réponse pour l'application
                         if ($headers['app-type'] === 'adminapp' && $utilisateur->is_admin != 1){
                             http_response_code(401);
                             echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
@@ -122,7 +127,7 @@ class UtilisateurController {
         }
 
     }
-
+    // Action pour la méthode Patch uniquement admin
     function patch($id, $data){
         if ($authorization == 'admin'){
             if ($id){
@@ -143,7 +148,7 @@ class UtilisateurController {
             echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
-
+    // Action de la methode DELETE
     function delete($id){
         if ($id){
             $utilisateur = Utilisateur::find_one($id);
