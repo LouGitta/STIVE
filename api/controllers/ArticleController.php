@@ -4,11 +4,14 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 
-
+// Classe qui regroupe les actions des articles
 class ArticleController {
     public $att_article = ['commande_id', 'produit_id', 'prix','quantite'];
+        
     
+    // Actions liées à la méthode GET
     function get($param){
+        // Si paramètre commandes renvoie les articles liés
         if ($param['commande']) {
             $tableau = [];
                 $articles = Article::where('commande_id',$param['commande'])->find_many();
@@ -21,7 +24,7 @@ class ArticleController {
                 }
             echo json_encode($tableau);
 
-        
+        // Si paramètre id renvoie l'article avec l'id correspondant
         } else if ($param['id']) {
             $article = Article::find_one($param['id']);
             if ($article) {

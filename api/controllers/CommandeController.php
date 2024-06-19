@@ -5,15 +5,17 @@ require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 require_once __DIR__ . '/RestockController.php';
 
+// Classe qui regroupe les actions des commandes
 class CommandeController {
-    
+    // Attributs liés aux tables colonnes commande et article
     public $att_commande = ['id', 'reference_commande', 'date_commande', 'utilisateur_id', 'quantite_commande', 'prix_commande'];
     public $att_article = ['id','commande_id', 'produit_id', 'prix', 'quantite' ];
 
+    // Actions liées à la méthode GET
     function get($param, $authorization){
+        // Client autorisé à récupérer les commandes liées à son id
         if ($authorization == 'client'){
             if (isset($param['id'])) {
-
                 $commande = Commande::find_one($param['id']);
                 if ($commande) {
                     echo json_encode($commande->as_array());
@@ -35,6 +37,7 @@ class CommandeController {
                 echo json_encode($tableau);
 
             }
+        // Admin récupère toutes les commandes
         }else if ($authorization == 'admin'){
             $commandes = Commande::find_many();
                 $tableau = [];
@@ -52,7 +55,7 @@ class CommandeController {
         }
     }
 
-
+    // Actions liées à la méthode POST
     function post($data, $headers, $image, $authorization){
         if ($authorization == 'admin' || 'client'){
             $reference = $data->date_commande .'/'. substr(hash('sha256', date('Y-m-d H:i:s:ms')), 8, 8);
@@ -101,7 +104,8 @@ class CommandeController {
         }
 
     }
-
+    
+    // Actions liées à la méthode PATCH
     function patch($id, $data){
         if ($id){
             $commande = Commande::find_one($id);
@@ -118,6 +122,7 @@ class CommandeController {
         }
     }
 
+    // Actions liées à la méthode DELETE
     function delete($id){
         if ($id){
             $commande = Commande::find_one($id);
@@ -138,13 +143,11 @@ class CommandeController {
     // Modification du stock
     function stockUpdate($data){
             $produit = Produit::find_one($data->produit_id);
-            // print_r($produit->quantite_stock);
             $produit->quantite_stock -= $data->quantite;
-            // print_r($produit->quantite_stock);
             $produit->save();
 
             // echo json_encode(['status' => 'success', 'message' => "Modification du stock validee"]);
-
+            // Si le stock du produit est < à 36 il y a un restock automatique
             if ($produit->quantite_stock <= 36){
                 // echo json_encode(['status' => 'warning', 'message' => "Restock en cours"]);
                 $restock = new RestockController();

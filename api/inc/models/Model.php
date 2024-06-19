@@ -1,5 +1,5 @@
 <?php
-
+// Lien d'une class vers une table de la bdd
 class Produit extends Model{
 
     public static $_table = "produit";
