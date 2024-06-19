@@ -1,4 +1,5 @@
-// Global function
+// Fonction globale
+// Récupère le token de l'utilisateur et renvoie les données
 function getUser() {
     if (!window.localStorage.getItem("token")) {
         return null;
@@ -10,6 +11,7 @@ function getUser() {
     }
 }
 
+// Affiche les éléments pour les utilisateurs non connecté
 function displayNoUserElements() {
     const noUserElements = document.querySelectorAll(".noUserElement");
     for (let element of noUserElements) {
@@ -17,6 +19,7 @@ function displayNoUserElements() {
     }
 }
 
+// Affiche les éléments pour les utilisateurs connecté
 function displayUserElements() {
     const userElements = document.querySelectorAll(".userElement");
     for (let element of userElements) {
@@ -40,13 +43,14 @@ function hideCard(card) {
     }
 }
 
-
+// Supprime le token pour effectuer la déconnexion
 function disconnect(){
     window.localStorage.removeItem("token")
     location.reload()
 }
 
-// Accueil function
+// Fonctions de la page acceuil
+// Envoie une requete pour récupérer les la liste des produits
 async function getProduits() {
     // url pour récupérer ma liste d'articles //
     const url = "/STIVE/api/produit";
@@ -63,7 +67,8 @@ async function getProduits() {
         console.log(error.message);
     }
 }
-// si erreur afficher un message //
+
+// Message s'il n'y a pas de produits
 function afficherNoProduitsElements() {
     const message = "Il n'y a pas d'article à présenter !";
     const errorMessageElement = document.querySelector(
@@ -74,6 +79,7 @@ function afficherNoProduitsElements() {
     errorMessageElement.classList.toggle("hidden");
 }
 
+// Ajout des produits sur la page
 function afficherProduitsElements(products) {
     // l'élément qui reçoit les cartes //
     const container = document.querySelector(".cards--container");
@@ -103,6 +109,7 @@ function afficherProduitsElements(products) {
     }
 }
 
+// Initialiser les filtres
 function initFilters() {
     const filters = document.querySelectorAll(".filter");
 
@@ -127,6 +134,7 @@ function handleFilterClick(event) {
 
 
 // Produit function
+// Récupère un produit avec son ID 
 async function getProduit() {
     const id = window.location.search.split('=')[1]
     // url pour récupérer mon produit //
@@ -145,6 +153,7 @@ async function getProduit() {
     }
 }
 
+// Affiche les éléments du produits
 function afficherProduitElements(product) {
     // l'élément qui reçoit les cartes //
     document.querySelector(".produit-page").textContent = product.nom;
@@ -177,6 +186,7 @@ function afficherProduitElements(product) {
     localStorage.setItem('produitActuel', JSON.stringify(product));
 }
 
+// Affiche un message si le produit n'existe pas
 function afficherNoProduitElements() {
     const message = "Cet article n'existe pas";
     const errorMessageElement = document.querySelector(
@@ -187,7 +197,7 @@ function afficherNoProduitElements() {
     errorMessageElement.classList.toggle("hidden");
 }
 
-
+// Ajoute le produit au panier
 function addToCart(){
     const quantite = document.getElementById("quantite").value
     const produit = JSON.parse(localStorage.getItem('produitActuel'))
@@ -241,6 +251,7 @@ function addToCart(){
 }
 
 // Commande function
+// Envoie une requete pour récupérer la liste des commandes pour l'utilisateur
 async function getCommandes() {
     // url pour récupérer ma liste d'articles //
     const user_id = getUser();
@@ -263,7 +274,7 @@ async function getCommandes() {
     }
 }
 
-// si erreur afficher un message //
+// Affiche un messages si aucune commande n'a été passée
 function afficherNoCommandesElements() {
     const message = "Aucunes commandes passées !";
     const errorMessageElement = document.querySelector(
@@ -274,7 +285,7 @@ function afficherNoCommandesElements() {
     errorMessageElement.classList.toggle("hidden");
 }
 
-// affichage des produits //
+// Affiche les commandes 
 function afficherCommandesElements(commandes) {
     // l'élément qui reçoit les cartes //
     const container = document.querySelector(".cards--container--commande");
@@ -297,6 +308,7 @@ function afficherCommandesElements(commandes) {
 
 
 // Inscription Connexion function
+// Récupėre les informations d'inscription et envoie une requête pour créer le compte
 async function inscription(event) {
     event.preventDefault();
 
@@ -335,7 +347,7 @@ async function inscription(event) {
 }    
 
 
-
+// Récupėre les informations d'inscription et envoie une requête pour la connexion
 async function connexion(event){
     event.preventDefault();
     
@@ -370,6 +382,7 @@ async function connexion(event){
     }
 }
 
+// Afficher le mot de passe dans le formulaire
 function afficherMdp() {
     const passwordInput = document.getElementById('mdp');
     const passwordIcon = document.getElementById('afficherMdp');
@@ -384,6 +397,7 @@ function afficherMdp() {
     }
 }
 
+// Afficher le mot de passe confirmer dans le formulaire
 function afficherMdpConfirmer() {
     const passwordInput = document.getElementById('mdp-confirmer');
     const passwordIcon = document.getElementById('afficherMdpConfirmer');
@@ -399,6 +413,7 @@ function afficherMdpConfirmer() {
 }
 
 // Panier function
+// Récupère les produits du panier
 async function getProduitsPanier() {
     const produits = JSON.parse(localStorage.getItem('panier'))
     
@@ -408,6 +423,7 @@ async function getProduitsPanier() {
     }
 }
 
+// Afficher les produits et les infos du récapitulatif
 function afficherPanierElements(panier) {
     const container = document.querySelector(".produit--panier");
 
@@ -453,6 +469,7 @@ function afficherPanierElements(panier) {
     document.querySelector(".sous--total").innerHTML = prixTotal + ' €';
 }
 
+// Affiche un message si =='il n'y a rien dans le panier
 function afficherNoPanierElements() {
     const message = "Il n'y a pas d'article dans le panier !";
     const errorMessageElement = document.querySelector(
@@ -463,6 +480,7 @@ function afficherNoPanierElements() {
     errorMessageElement.classList.toggle("hidden");
 }
 
+// Valide le panier et affiche les infos de livraison
 function validerPanier() {
     if (!localStorage.getItem('panier')){
         alert('Votre panier est vide VINGT DIEUX !')
@@ -473,10 +491,12 @@ function validerPanier() {
     }
 }
 
+// Valide l'adresse
 function validerAdresse() {
     document.querySelector(".paiement").classList.toggle("hidden");
 }
 
+// Récupère la date
 function getDate() {
     const today = new Date();
     const year = today.getFullYear();
@@ -486,6 +506,7 @@ function getDate() {
     return `${year}-${month}-${day}`;
 }
 
+// Valide le paiement et prépare l'envoie de la commande
 function validerPaiement() {
     alert('Paiement validé !');
 
@@ -532,6 +553,7 @@ function validerPaiement() {
     postCommande(url, commande)
 }
 
+// Envoie la requête pour confirmer la commande
 async function postCommande(url, data) {
     const response = await fetch(url, {
         method: 'POST',
