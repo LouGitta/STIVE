@@ -5,6 +5,7 @@ require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 require_once __DIR__ . '/RestockController.php';
 
+// Classe qui regroupe les actions des commandes
 class CommandeController {
     // Attributs liés aux tables colonnes commande et article
     public $att_commande = ['id', 'reference_commande', 'date_commande', 'utilisateur_id', 'quantite_commande', 'prix_commande'];
