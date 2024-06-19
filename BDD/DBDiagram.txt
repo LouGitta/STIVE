@@ -1,26 +1,26 @@
 Table "utilisateur" {
   "id" int [pk, not null, increment]
-  "nom" varchar(50) [default: NULL]
-  "prenom" varchar(50) [default: NULL]
-  "mdp" varchar(50) [default: NULL]
-  "mail" varchar(50) [default: NULL]
+  "nom" varchar(255) [default: NULL]
+  "prenom" varchar(255) [default: NULL]
+  "mdp" varchar(255) [default: NULL]
+  "mail" varchar(255) [default: NULL]
   "is_client" tinyint(1) [default: 1]
   "is_admin" tinyint(1) [default: 0]
 }
 
 Table "produit" {
   "id" int [pk, not null, increment]
-  "nom" varchar(50) [default: NULL]
+  "nom" varchar(255) [default: NULL]
   "prix" float [default: NULL]
   "description" varchar(255) [default: NULL]
   "annee" year [default: NULL]
   "quantite_stock" int [default: NULL]
   "reference" varchar(255) [default: NULL]
   "fournisseur" varchar(255) [default: NULL]
-  "info" varchar(250) [default: NULL]
-  "maison" varchar(250) [default: NULL]
-  "famille" varchar(250) [default: NULL]
-  "region" varchar(250) [default: NULL]
+  "info" varchar(255) [default: NULL]
+  "maison" varchar(255) [default: NULL]
+  "famille" varchar(255) [default: NULL]
+  "region" varchar(255) [default: NULL]
   "image" varchar(255) [default: NULL]
 }
 
