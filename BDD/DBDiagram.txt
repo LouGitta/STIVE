@@ -49,6 +49,7 @@ Table "restock" {
 }
 
 Table "article" {
+  "id" int [pk, not null, increment]
   "commande_id" int [not null]
   "produit_id" int [not null]
   "prix" float [default: NULL]
