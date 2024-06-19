@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 
-
+// Classe qui regroupe les actions des articles
 class ArticleController {
     public $att_article = ['commande_id', 'produit_id', 'prix','quantite'];
         
