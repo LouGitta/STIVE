@@ -2,59 +2,16 @@
 Imports Newtonsoft.Json
 Imports System.Net.Http
 Imports System.Text
+Imports Newtonsoft.Json.Linq
 
 Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+
         Me.WindowState = FormWindowState.Maximized
-        DataGridView1.Dock = DockStyle.Fill
-
-        Dim margin As New Padding(100, 500, 100, 250)
-        Me.Margin = margin
-
-        DataGridView1.AutoGenerateColumns = False
-        InitialiserColonnesDataGridView()
-
-
+        'DataGridView1.Dock = DockStyle.Fill
         RefreshData()
         AdjustButtonPosition()
-    End Sub
-
-    Private Sub InitialiserColonnesDataGridView()
-
-        DataGridView1.Columns.Clear()
-
-
-        Dim deleteButtonColumn As New DataGridViewButtonColumn()
-        deleteButtonColumn.HeaderText = "Supprimer"
-        deleteButtonColumn.Name = "DeleteButtonColumn"
-        deleteButtonColumn.Text = "Supprimer"
-        deleteButtonColumn.UseColumnTextForButtonValue = True
-        deleteButtonColumn.DefaultCellStyle.BackColor = Color.Red
-        DataGridView1.Columns.Insert(0, deleteButtonColumn)
-
-
-        Dim editButtonColumn As New DataGridViewButtonColumn()
-        editButtonColumn.HeaderText = "Modifier"
-        editButtonColumn.Name = "EditButtonColumn"
-        editButtonColumn.Text = "Modifier"
-        editButtonColumn.UseColumnTextForButtonValue = True
-        editButtonColumn.DefaultCellStyle.BackColor = Color.Orange
-        DataGridView1.Columns.Insert(1, editButtonColumn)
-
-
-        DataGridView1.Columns.Add("id", "ID")
-        DataGridView1.Columns.Add("nom", "Nom")
-        DataGridView1.Columns.Add("prix", "Prix")
-        DataGridView1.Columns.Add("description", "Description")
-        DataGridView1.Columns.Add("annee", "Année")
-        DataGridView1.Columns.Add("quantite_stock", "Quantité en stock")
-        DataGridView1.Columns.Add("reference", "Référence")
-        DataGridView1.Columns.Add("fournisseur", "Fournisseur")
-        DataGridView1.Columns.Add("info", "Info")
-        DataGridView1.Columns.Add("maison", "Maison")
-        DataGridView1.Columns.Add("famille", "Famille")
-        DataGridView1.Columns.Add("region", "Région")
-        DataGridView1.Columns.Add("image", "Image")
     End Sub
 
     Private Sub AdjustButtonPosition()
@@ -76,7 +33,7 @@ Public Class Form1
     End Sub
 
     Private Async Sub RefreshData()
-        Dim apiUrl As String = Config.BaseApiUrl & "/produit"
+        Dim apiUrl As String = Config.BaseApiUrl & $"/produit"
 
         Using client As New HttpClient()
             Dim response As HttpResponseMessage = Await client.GetAsync(apiUrl)
@@ -116,12 +73,16 @@ Public Class Form1
     End Sub
 
     Private Async Sub DeleteRecord(id As Integer)
-        Dim apiUrl As String = Config.BaseApiUrl & $"/produit/{id}"
+        Dim apiUrl As String = Config.BaseApiUrl & $"/produit/?id={id}"
 
         Using client As New HttpClient()
+            client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Config.JwtToken)
             Dim response As HttpResponseMessage = Await client.DeleteAsync(apiUrl)
 
             If response.IsSuccessStatusCode Then
+                Dim responseContent As String = Await response.Content.ReadAsStringAsync()
+                Dim responseData As JObject = JObject.Parse(responseContent)
+                MessageBox.Show(responseData("message"))
                 RefreshData()
                 MessageBox.Show("Ligne supprimée avec succès.")
             Else
@@ -134,8 +95,21 @@ Public Class Form1
         Me.Hide()
         Commandes_Form.Show()
     End Sub
-End Class
 
+    Private Sub AccueilBouton_Click(sender As Object, e As EventArgs) Handles AccueilBouton.Click
+        Me.Hide()
+        GestionStive.Accueil.Show()
+    End Sub
+
+    Private Sub UtilisateurBouton_Click(sender As Object, e As EventArgs) Handles UtilisateurBouton.Click
+        Me.Hide()
+        UtilisateursForm.Show()
+    End Sub
+
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+End Class
 
 Public Class Produit
     Public Property id As Integer

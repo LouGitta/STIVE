@@ -27,6 +27,7 @@ Partial Class Login
         Label1 = New Label()
         Label2 = New Label()
         loginButton = New Button()
+        AccueilBouton = New Button()
         SuspendLayout()
         ' 
         ' emailTextBox
@@ -71,11 +72,22 @@ Partial Class Login
         loginButton.Text = "Accéder à la gestion des stocks"
         loginButton.UseVisualStyleBackColor = True
         ' 
+        ' AccueilBouton
+        ' 
+        AccueilBouton.Font = New Font("Segoe UI", 15F)
+        AccueilBouton.Location = New Point(12, 12)
+        AccueilBouton.Name = "AccueilBouton"
+        AccueilBouton.Size = New Size(110, 76)
+        AccueilBouton.TabIndex = 56
+        AccueilBouton.Text = "Retour"
+        AccueilBouton.UseVisualStyleBackColor = True
+        ' 
         ' Login
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(750, 565)
+        Controls.Add(AccueilBouton)
         Controls.Add(loginButton)
         Controls.Add(Label2)
         Controls.Add(Label1)
@@ -92,4 +104,6 @@ Partial Class Login
     Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents loginButton As Button
+    Friend WithEvents Accueil As Button
+    Friend WithEvents AccueilBouton As Button
 End Class

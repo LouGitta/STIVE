@@ -22,9 +22,7 @@ Partial Class modifierProduit
     'Ne la modifiez pas à l'aide de l'éditeur de code.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        ImageTextBox = New TextBox()
         Label12 = New Label()
-        ImporterImageButton = New Button()
         Label11 = New Label()
         Label9 = New Label()
         Label10 = New Label()
@@ -49,16 +47,9 @@ Partial Class modifierProduit
         NomTextBox = New TextBox()
         BoutonValider = New Button()
         Accueil = New Button()
+        idTextBox = New TextBox()
+        Label13 = New Label()
         SuspendLayout()
-        ' 
-        ' ImageTextBox
-        ' 
-        ImageTextBox.Font = New Font("Segoe UI", 15F)
-        ImageTextBox.Location = New Point(676, 342)
-        ImageTextBox.Margin = New Padding(3, 3, 100, 3)
-        ImageTextBox.Name = "ImageTextBox"
-        ImageTextBox.Size = New Size(153, 34)
-        ImageTextBox.TabIndex = 53
         ' 
         ' Label12
         ' 
@@ -68,16 +59,6 @@ Partial Class modifierProduit
         Label12.Name = "Label12"
         Label12.Size = New Size(0, 28)
         Label12.TabIndex = 52
-        ' 
-        ' ImporterImageButton
-        ' 
-        ImporterImageButton.Font = New Font("Segoe UI", 15F)
-        ImporterImageButton.Location = New Point(437, 342)
-        ImporterImageButton.Name = "ImporterImageButton"
-        ImporterImageButton.Size = New Size(217, 40)
-        ImporterImageButton.TabIndex = 51
-        ImporterImageButton.Text = "Importer Image"
-        ImporterImageButton.UseVisualStyleBackColor = True
         ' 
         ' Label11
         ' 
@@ -309,15 +290,34 @@ Partial Class modifierProduit
         Accueil.Text = "Accueil"
         Accueil.UseVisualStyleBackColor = True
         ' 
+        ' idTextBox
+        ' 
+        idTextBox.Font = New Font("Segoe UI", 15F)
+        idTextBox.Location = New Point(195, 57)
+        idTextBox.Margin = New Padding(3, 3, 100, 3)
+        idTextBox.Name = "idTextBox"
+        idTextBox.Size = New Size(153, 34)
+        idTextBox.TabIndex = 55
+        ' 
+        ' Label13
+        ' 
+        Label13.AutoSize = True
+        Label13.Font = New Font("Segoe UI", 15F)
+        Label13.Location = New Point(134, 57)
+        Label13.Name = "Label13"
+        Label13.Size = New Size(29, 28)
+        Label13.TabIndex = 56
+        Label13.Text = "id"
+        ' 
         ' modifierProduit
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1508, 791)
+        Controls.Add(Label13)
+        Controls.Add(idTextBox)
         Controls.Add(Accueil)
-        Controls.Add(ImageTextBox)
         Controls.Add(Label12)
-        Controls.Add(ImporterImageButton)
         Controls.Add(Label11)
         Controls.Add(Label9)
         Controls.Add(Label10)
@@ -346,10 +346,7 @@ Partial Class modifierProduit
         ResumeLayout(False)
         PerformLayout()
     End Sub
-
-    Friend WithEvents ImageTextBox As TextBox
     Friend WithEvents Label12 As Label
-    Friend WithEvents ImporterImageButton As Button
     Friend WithEvents Label11 As Label
     Friend WithEvents Label9 As Label
     Friend WithEvents Label10 As Label
@@ -374,4 +371,6 @@ Partial Class modifierProduit
     Friend WithEvents NomTextBox As TextBox
     Friend WithEvents BoutonValider As Button
     Friend WithEvents Accueil As Button
+    Friend WithEvents idTextBox As TextBox
+    Friend WithEvents Label13 As Label
 End Class

@@ -43,6 +43,7 @@ CREATE TABLE `restock` (
 );
 
 CREATE TABLE `article` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `commande_id` int NOT NULL,
   `produit_id` int NOT NULL,
   `prix` float DEFAULT null,

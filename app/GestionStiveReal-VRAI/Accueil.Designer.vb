@@ -23,7 +23,6 @@ Partial Class Accueil
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Button1 = New Button()
-        Button2 = New Button()
         TextBoxApiUrl = New TextBox()
         Button3 = New Button()
         SuspendLayout()
@@ -36,15 +35,6 @@ Partial Class Accueil
         Button1.TabIndex = 0
         Button1.Text = "Se connecter"
         Button1.UseVisualStyleBackColor = True
-        ' 
-        ' Button2
-        ' 
-        Button2.Location = New Point(553, 178)
-        Button2.Name = "Button2"
-        Button2.Size = New Size(146, 86)
-        Button2.TabIndex = 1
-        Button2.Text = "Accéder aux stocks"
-        Button2.UseVisualStyleBackColor = True
         ' 
         ' TextBoxApiUrl
         ' 
@@ -69,7 +59,6 @@ Partial Class Accueil
         ClientSize = New Size(800, 450)
         Controls.Add(Button3)
         Controls.Add(TextBoxApiUrl)
-        Controls.Add(Button2)
         Controls.Add(Button1)
         Name = "Accueil"
         Text = "Accueil"
@@ -78,7 +67,6 @@ Partial Class Accueil
     End Sub
 
     Friend WithEvents Button1 As Button
-    Friend WithEvents Button2 As Button
     Friend WithEvents TextBoxApiUrl As TextBox
     Friend WithEvents Button3 As Button
 End Class

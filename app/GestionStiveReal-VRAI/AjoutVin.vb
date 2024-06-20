@@ -46,7 +46,7 @@ Public Class AjoutVin
             End If
         Next
 
-
+        ' Prepare data to be sent
         Dim vin As New Dictionary(Of String, String) From {
             {"nom", NomTextBox.Text},
             {"prix", PrixTextBox.Text},
@@ -58,60 +58,31 @@ Public Class AjoutVin
             {"info", InfoTextBox.Text},
             {"maison", MaisonTextBox.Text},
             {"famille", FamilleTextBox.Text},
-            {"region", RegionTextBox.Text},
-            {"image", ImageTextBox.Text}
+            {"region", RegionTextBox.Text}
         }
-
 
         Dim jsonData As String = JsonConvert.SerializeObject(vin)
 
+        ' Send data to API
+        Using client As New HttpClient()
+            client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Config.JwtToken)
 
-        Using content As New MultipartFormDataContent()
-            If Not String.IsNullOrEmpty(ImageTextBox.Text) Then
-                Dim imageContent As ByteArrayContent = New ByteArrayContent(System.IO.File.ReadAllBytes(ImageTextBox.Text))
-                imageContent.Headers.ContentType = New System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg")
-                content.Add(imageContent, "image", System.IO.Path.GetFileName(ImageTextBox.Text))
-            End If
-
+            ' Define content as JSON
             Dim jsonContent As New StringContent(jsonData, Encoding.UTF8, "application/json")
-            content.Add(jsonContent, "data")
 
+            ' Send POST request with JSON content
+            Dim response As HttpResponseMessage = Await client.PostAsync(Config.BaseApiUrl & "/produit", jsonContent)
 
-            Using client As New HttpClient()
-                Dim response As HttpResponseMessage = Await client.PostAsync(Config.BaseApiUrl & "/produit", content)
-
-                If response.IsSuccessStatusCode Then
-                    MessageBox.Show("Produit ajouté avec succès.", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Else
-                    MessageBox.Show("Erreur", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End If
-            End Using
-        End Using
-    End Sub
-
-    Private Sub ImporterImageButton_Click(sender As Object, e As EventArgs) Handles ImporterImageButton.Click
-        Using openFileDialog As New OpenFileDialog()
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp"
-            openFileDialog.Title = "Choisis une image"
-
-            If openFileDialog.ShowDialog() = DialogResult.OK Then
-                ImageTextBox.Text = openFileDialog.FileName
+            If response.IsSuccessStatusCode Then
+                MessageBox.Show("Produit ajouté avec succès.", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Else
+                MessageBox.Show("Erreur lors de l'ajout du produit.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End Using
     End Sub
 
-    Private Sub Accueil_Click_1(sender As Object, e As EventArgs) Handles Accueil.Click
+    Private Sub Accueil_Click(sender As Object, e As EventArgs) Handles Accueil.Click
         Me.Hide()
         Form1.Show()
     End Sub
-End Class
-
-Public Class Commande
-    Public Property id As Integer
-    Public Property reference_commande As String
-    Public Property date_commande As Date
-    Public Property utilisateur_id As Integer
-    Public Property quantite_commande As Integer
-    Public Property prix_commande As Double
-    Public Property statut As String
 End Class

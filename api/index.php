@@ -9,30 +9,38 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 $url = isset($_SERVER['REDIRECT_URL']) ? $_SERVER['REDIRECT_URL'] : '';
+// Récupère la méthode de la requête
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Récupère les headers de la requête
 $headers = getallheaders();
 
 $image = '';
 $data = '';
 
+// Récupère l'image de la requête
 if (isset($_FILES['image'])){
     $image = $_FILES['image'];
 }
 
+// Récupère les données fournies dans la requêtes
 if (!empty(file_get_contents('php://input'))){
     $data = json_decode(file_get_contents('php://input'));
 } else if (isset($_POST['data'])) {
     $data = json_decode($_POST['data']);
 }
+// Emplacement de l'api après le domaine
 $base_url = "/STIVE/api/";
+
+// Ne garde que l'endpoint de la requête
 $page = str_replace($base_url, '', $url);
 $url_list = explode('/', $page);
 $controller = '';
 
+// Demande les authorisations de l'utilisateurs
 $authorization = authorize($headers);
 
-// Page redirect
+// Redire vers la page de l'api correspondantes
 switch ($url_list[0]) {
     case '':
         header("Location: acceuilapi.php");
@@ -78,8 +86,8 @@ switch ($url_list[0]) {
         echo json_encode(['status' => 'error', 'message' => "Page non trouvée"]);    
     }
 
-        // Method redirect
-        if ($controller) {
+// Redirige vers la methode correspondante GET = récupère, POST = Ajout, PATCH = Mise à jour, DELETE = suppression
+if ($controller) {
     switch ($method) {
         case 'GET':
             $controller->get($_GET, $authorization);
@@ -113,6 +121,7 @@ switch ($url_list[0]) {
     }
 }
 
+// Regarde les autorisations de l'utilisateurs
 function authorize($token){
     if (!empty($token['Authorization'])) {
         if (preg_match('/Bearer\s(\S+)/', $token['Authorization'], $matches)) {

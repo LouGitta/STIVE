@@ -1,5 +1,5 @@
 <?php
-
+// Génère une page d'acceuil au format HTML si la requête vient d'un navigateur ou un JSON avec les pages principales.
 $acceptHeader = $_SERVER['HTTP_ACCEPT'];
 
 if (strpos($acceptHeader, 'text/html') !== false) {

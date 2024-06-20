@@ -1,11 +1,12 @@
 ﻿Public Module Config
-    Public BaseApiUrl As String = "http://localhost/stive/api"
+    Public BaseApiUrl As String = "http://localhost/STIVE/api"
+    Public JwtToken As String = ""
 End Module
 Public Class Accueil
 
-    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-        Me.Hide()
-        Form1.Show()
+    Private Sub Button2_Click(sender As Object, e As EventArgs)
+        Hide
+        Form1.Show
 
     End Sub
 

@@ -46,9 +46,7 @@ Partial Class AjoutVin
         Label9 = New Label()
         Label10 = New Label()
         Label11 = New Label()
-        ImporterImageButton = New Button()
         Label12 = New Label()
-        ImageTextBox = New TextBox()
         Accueil = New Button()
         CType(FileSystemWatcher1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -278,16 +276,6 @@ Partial Class AjoutVin
         Label11.TabIndex = 24
         Label11.Text = "region"
         ' 
-        ' ImporterImageButton
-        ' 
-        ImporterImageButton.Font = New Font("Segoe UI", 15F)
-        ImporterImageButton.Location = New Point(480, 316)
-        ImporterImageButton.Name = "ImporterImageButton"
-        ImporterImageButton.Size = New Size(217, 40)
-        ImporterImageButton.TabIndex = 25
-        ImporterImageButton.Text = "Importer Image"
-        ImporterImageButton.UseVisualStyleBackColor = True
-        ' 
         ' Label12
         ' 
         Label12.AutoSize = True
@@ -296,15 +284,6 @@ Partial Class AjoutVin
         Label12.Name = "Label12"
         Label12.Size = New Size(0, 28)
         Label12.TabIndex = 26
-        ' 
-        ' ImageTextBox
-        ' 
-        ImageTextBox.Font = New Font("Segoe UI", 15F)
-        ImageTextBox.Location = New Point(719, 316)
-        ImageTextBox.Margin = New Padding(3, 3, 100, 3)
-        ImageTextBox.Name = "ImageTextBox"
-        ImageTextBox.Size = New Size(153, 34)
-        ImageTextBox.TabIndex = 27
         ' 
         ' Accueil
         ' 
@@ -322,9 +301,7 @@ Partial Class AjoutVin
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(932, 689)
         Controls.Add(Accueil)
-        Controls.Add(ImageTextBox)
         Controls.Add(Label12)
-        Controls.Add(ImporterImageButton)
         Controls.Add(Label11)
         Controls.Add(Label9)
         Controls.Add(Label10)

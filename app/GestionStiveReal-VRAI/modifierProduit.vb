@@ -1,5 +1,6 @@
 ﻿Imports Newtonsoft.Json
 Imports System.Net.Http
+Imports System.Runtime.CompilerServices
 Imports System.Text
 
 Public Class modifierProduit
@@ -17,27 +18,32 @@ Public Class modifierProduit
         Public Property maison As String
         Public Property famille As String
         Public Property region As String
-        Public Property image As String
+        'Public Property image As String
 
     End Class
 
 
 
-    Private ReadOnly _recordId As Integer
+    Dim _recordId As Integer
+    Private Sub modifierProduit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.WindowState = FormWindowState.Maximized
+        InitializeComponent()
 
+
+
+
+        PreRemplirZonesDeTexte()
+        ' MsgBox(_recordId)
+    End Sub
 
     Public Sub New(ByVal recordId As Integer)
-        InitializeComponent()
         _recordId = recordId
-
-
-        ' PreRemplirZonesDeTexte()
     End Sub
 
     Private Sub PreRemplirZonesDeTexte()
-
         Dim produit As Produit = ObtenirProduitDeApi(_recordId)
         If produit IsNot Nothing Then
+            idTextBox.Text = produit.id.ToString()
             NomTextBox.Text = produit.nom
             PrixTextBox.Text = produit.prix.ToString()
             DescriptionTextBox.Text = produit.description
@@ -49,43 +55,77 @@ Public Class modifierProduit
             MaisonTextBox.Text = produit.maison
             FamilleTextBox.Text = produit.famille
             RegionTextBox.Text = produit.region
-            ImageTextBox.Text = produit.image
+            ' Ne pas inclure ImageTextBox.Text = produit.image
         End If
     End Sub
 
     Private Function ObtenirProduitDeApi(recordId As Integer) As Produit
-        Dim apiUrl As String = Config.BaseApiUrl & $"/Produit/{recordId}"
+        Dim apiUrl As String = Config.BaseApiUrl & $"/produit/?id={recordId}"
 
         Using client As New HttpClient()
             Dim response As HttpResponseMessage = client.GetAsync(apiUrl).Result
-
             If response.IsSuccessStatusCode Then
 
                 Dim jsonString As String = response.Content.ReadAsStringAsync().Result
+                MessageBox.Show(jsonString)
                 Dim produit As Produit = JsonConvert.DeserializeObject(Of Produit)(jsonString)
                 Return produit
             Else
+                MsgBox(apiUrl)
                 MessageBox.Show("Erreur lors de la récupération des données de l'enregistrement.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Return Nothing
             End If
         End Using
     End Function
 
-    Private Sub BoutonValider_Click(sender As Object, e As EventArgs)
+
+    Private Function MettreAJourProduitDansApi(nouvellesDonnees As Produit) As Boolean
+        Dim apiUrl As String = Config.BaseApiUrl & $"/produit/?id={_recordId}"
+        Using client As New HttpClient()
+            MsgBox(apiUrl)
+            client.DefaultRequestHeaders.Authorization = New System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Config.JwtToken)
+            ' Ne pas inclure .image dans le contenu JSON
+            Dim contenu As New StringContent(JsonConvert.SerializeObject(nouvellesDonnees), Encoding.UTF8, "application/json")
+            Dim response As HttpResponseMessage = client.PatchAsync(apiUrl, contenu).Result
+
+            If response.IsSuccessStatusCode Then
+                Dim Messageresponse As String = response.Content.ReadAsStringAsync().Result
+                MessageBox.Show("modif marche normalement !!.", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MsgBox(Messageresponse)
+                Return True
+            Else
+                Dim Messageresponse As String = response.Content.ReadAsStringAsync().Result
+                MessageBox.Show("aie aie aie", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MsgBox(Messageresponse)
+                Return False
+
+            End If
+        End Using
+    End Function
+
+
+
+    Private Sub Accueil_Click(sender As Object, e As EventArgs) Handles Accueil.Click
+        Me.Hide()
+        Form1.Show()
+    End Sub
+
+    Private Sub BoutonValider_Click_1(sender As Object, e As EventArgs) Handles BoutonValider.Click
         Dim nouvellesDonnees As New Produit With {
-            .nom = NomTextBox.Text,
-            .prix = Convert.ToDecimal(PrixTextBox.Text),
-            .description = DescriptionTextBox.Text,
-            .annee = Convert.ToInt32(AnneeTextBox.Text),
-            .quantite_stock = Convert.ToInt32(QuantiteStockTextBox.Text),
-            .reference = ReferenceTextBox.Text,
-            .fournisseur = FournisseurTextBox.Text,
-            .info = InfoTextBox.Text,
-            .maison = MaisonTextBox.Text,
-            .famille = FamilleTextBox.Text,
-            .region = RegionTextBox.Text,
-            .image = ImageTextBox.Text
-        }
+            .id = Convert.ToDecimal(idTextBox.Text),
+       .nom = NomTextBox.Text,
+       .prix = Convert.ToDecimal(PrixTextBox.Text),
+       .description = DescriptionTextBox.Text,
+       .annee = Convert.ToInt32(AnneeTextBox.Text),
+       .quantite_stock = Convert.ToInt32(QuantiteStockTextBox.Text),
+       .reference = ReferenceTextBox.Text,
+       .fournisseur = FournisseurTextBox.Text,
+       .info = InfoTextBox.Text,
+       .maison = MaisonTextBox.Text,
+       .famille = FamilleTextBox.Text,
+       .region = RegionTextBox.Text
+   }
+        ' Ne pas inclure .image = ImageTextBox.Text
 
 
         MettreAJourProduitDansApi(nouvellesDonnees)
@@ -93,31 +133,4 @@ Public Class modifierProduit
 
         Close()
     End Sub
-    Private Function MettreAJourProduitDansApi(nouvellesDonnees As Produit) As Boolean
-        Dim apiUrl As String = Config.BaseApiUrl & $"/produit/{_recordId}"
-        Using client As New HttpClient()
-            Dim contenu As New StringContent(JsonConvert.SerializeObject(nouvellesDonnees), Encoding.UTF8, "application/json")
-            Dim response As HttpResponseMessage = client.PutAsync(apiUrl, contenu).Result
-
-            If response.IsSuccessStatusCode Then
-                MessageBox.Show("modif marche normalement !!.", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Return True
-            Else
-                MessageBox.Show("aie aie aie", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End If
-        End Using
-    End Function
-
-    Private Sub modifierProduit_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.WindowState = FormWindowState.Maximized
-
-    End Sub
-
-    Private Sub Accueil_Click(sender As Object, e As EventArgs) Handles Accueil.Click
-        Me.Hide()
-        Form1.Show()
-    End Sub
-
-
 End Class

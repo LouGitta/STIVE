@@ -4,12 +4,14 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../inc/config.inc.php';
 require_once __DIR__ . '/../inc/models/Model.php';
 
-
+// Classe qui regroupe les actions des produits
 class ProduitController {
-    
+    // Liste des attributs de la table produit
     public $att_produit = ['id', 'nom', 'prix','description', 'annee', 'quantite_stock', 'reference', 'fournisseur', 'info', 'maison', 'famille', 'region', 'image'];
 
+    // Actions liées à la méthode GET
     function get($param){
+        // S'il y a un id ne récupère que le produit correspondant
         if (isset($param['id'])) {
 
             $produit = Produit::find_one($param['id']);
@@ -19,27 +21,8 @@ class ProduitController {
                 http_response_code(404);
                 echo json_encode(['status' => 'error', 'message' => "¨Produit non trouvé"]);
             }
-        } else if ($param) {
-            $tableau = [];
-            foreach($param as $key => $value){
-                $produits = Produit::where($key,$value)->find_many();
-                foreach ($produits as $p) {
-                    $produitArray = [];
-                    foreach ($this->att_produit as $att) {
-                        $produitArray[$att] = $p->$att;
-                    }
-                    $tableau[] = $produitArray;
-                }
-            }
-            $unique_tableau = [];
-            foreach ($tableau as $element) {
-                $unique_tableau[$element['id']] = $element;
-            }
-            $produits = array_values($unique_tableau);
-            echo json_encode($produits);
-
-
-        } else {
+        // Sinon récupère tous les produits 
+        }  else {
             $produits = Produit::find_many();
             $tableau = [];
             foreach ($produits as $p) {
@@ -53,7 +36,7 @@ class ProduitController {
         }
     }
 
-
+    // Actions liées à la méthode POST disponible que pour les administrateurs
     function post($data, $param, $image, $authorization){
         if ($authorization == 'admin'){
             $produit = Produit::create();
@@ -101,7 +84,8 @@ class ProduitController {
             echo json_encode(['status' => 'error', 'message' => "Vous n'avez pas les autorisations requises"]);
         }
     }
-
+    
+    // Actions liées à la méthode PATCH disponible uniquement pour les administrateurs
     function patch($id, $data, $authorization){
         if ($authorization == 'admin'){
             
@@ -127,6 +111,7 @@ class ProduitController {
         }
     }
 
+    // Actions liées à la méthode DELETE
     function delete($id){
         if ($id){
             $produit = Produit::find_one($id);
