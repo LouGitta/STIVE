@@ -1,0 +1,6 @@
+C:\wamp64\www\STIVE\app\GestionStive.exe
+C:\wamp64\www\STIVE\app\GestionStive.dll
+C:\wamp64\www\STIVE\app\GestionStive.deps.json
+C:\wamp64\www\STIVE\app\GestionStive.runtimeconfig.json
+C:\wamp64\www\STIVE\app\GestionStive.pdb
+C:\wamp64\www\STIVE\app\Newtonsoft.Json.dll
