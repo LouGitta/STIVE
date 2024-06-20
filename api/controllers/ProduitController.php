@@ -107,12 +107,15 @@ class ProduitController {
             
             if ($id){
                 $produit = Produit::find_one($id);
+                echo json_encode(['message'=> $data]);
                 foreach ($data as $key => $value){
                 $produit->$key = $value;
                 }
                 $produit->save();
                 $tab['id'] = $produit->id;
-                echo json_encode($tab);
+                // echo json_encode($tab);
+                http_response_code(200);
+                // echo json_encode(['status' => 'success', 'message' => "Produit modifié"]);
 
             } else {
             http_response_code(405);

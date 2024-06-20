@@ -112,6 +112,7 @@ class CommandeController {
             $tab['id'] = $commande->id;
             echo json_encode($tab);
 
+
         } else {
             http_response_code(405);
             echo json_encode(['status' => 'error', 'message' => "Pas d'id fourni"]);
